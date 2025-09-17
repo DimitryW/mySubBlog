@@ -1,0 +1,16 @@
+<!-- templates/post_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h2>{{ post.title }}</h2>
+    <p>By {{ post.author }} on {{ post.created_at }}</p>
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width:100%; height:auto;">
+    {% endif %}
+    <div>
+        <pre style="white-space: pre-wrap;">{{ post.body|safe }}</pre>
+    </div>
+    <a href="{% url 'home' %}">Back to Home</a>
+</div>
+{% endblock %}
