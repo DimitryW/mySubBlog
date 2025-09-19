@@ -39,9 +39,16 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_ckeditor_5",
     "blog",
+    "corsheaders",
+    "rest_framework",
 ]
 
+# CorsMiddleware should be placed as high as possible,
+# especially before any middleware that can generate responses
+# such as Django's CommonMiddleware or Whitenoise's WhiteNoiseMiddleware.
+# If it is not before, it will not be able to add the CORS headers to these responses.
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -49,6 +56,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vue dev server
 ]
 
 ROOT_URLCONF = "blog_project.urls"
