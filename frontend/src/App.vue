@@ -1,18 +1,18 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { Home, Info } from 'lucide-vue-next'
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink to="/">
+          <Home class="icon" /> Home
+        </RouterLink>
+        <RouterLink to="/about">
+          <Info class="icon" /> About
+        </RouterLink>
       </nav>
     </div>
   </header>
@@ -23,7 +23,7 @@ import HelloWorld from './components/HelloWorld.vue'
 <style scoped>
 header {
   line-height: 1.5;
-  max-height: 100vh;
+  background: #2a2a2a;
 }
 
 .logo {
@@ -38,30 +38,42 @@ nav {
   margin-top: 2rem;
 }
 
+/* active 狀態 */
 nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
+  background: #424242ff;   /* 淺灰底色 */
+  color: #fff;             /* 白字 */
+  border-radius: 10px;      /* 圓角邊邊 */
+  font-weight: 500;
 }
 
 nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
+  display: flex;
+  align-items: center; 
+  gap: 0.5rem; 
+  padding: 1rem;
+  margin: 1rem;
+  /* border-left: 1px solid var(--color-border); */
 }
 
-nav a:first-of-type {
-  border: 0;
+/* hover 效果 */
+nav a:hover {
+  background: #424242ff;   /* 淺灰底色 */
+  border-radius: 10px;      /* 圓角邊邊 */
 }
+
 
 @media (min-width: 1024px) {
   header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+    display: block;
+    /* place-items: center; */
+    /* padding-right: calc(var(--section-gap) / 8); */
+    padding-left: calc(var(--section-gap) / 8);
   }
+
+  nav a .icon {
+  width: 18px;   /* 控制 icon 大小 */
+  height: 18px;
+}
 
   .logo {
     margin: 0 2rem 0 0;

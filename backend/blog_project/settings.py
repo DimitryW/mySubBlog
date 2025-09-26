@@ -14,7 +14,9 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -42,6 +44,11 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
 ]
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 5,  # 每頁 5 筆
+}
 
 # CorsMiddleware should be placed as high as possible,
 # especially before any middleware that can generate responses
@@ -146,7 +153,8 @@ customColorPalette = [
     {"color": "hsl(231, 48%, 48%)", "label": "Indigo"},
     {"color": "hsl(207, 90%, 54%)", "label": "Blue"},
 ]
-# settings.py
+# ckeditor_5 settings
+CKEDITOR_5_CUSTOM_CSS = "css/base.css"
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": {

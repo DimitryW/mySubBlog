@@ -1,0 +1,6 @@
+.ck-content,
+.ck-content p,
+.ck-content span,
+.ck-content a {
+    color: black !important;
+}
