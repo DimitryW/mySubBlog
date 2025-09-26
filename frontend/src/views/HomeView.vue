@@ -30,23 +30,30 @@ async function loadPosts(page = 1, append = false) {
 }
 
 onMounted(() => {
-  loadPosts(1)
+  loadPosts(1).then(() => {
+    // 等 DOM 更新完再建立 observer
+    nextTick(() => {
+      if (!loadMoreTrigger.value) return
 
-  // 建立 IntersectionObserver
-  observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && hasNextPage.value && !loading.value) {
-        loadPosts(currentPage.value + 1, true)
-      }
-    },
-    { threshold: 1.0 }
-  )
+      // 建立 IntersectionObserver，提前 100px 觸發
+      observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && hasNextPage.value && !loading.value) {
+            loadPosts(currentPage.value + 1, true)
+          }
+        },
+        { threshold: 0 } 
+      )
 
-  // 等 DOM 完全渲染
-  nextTick(() => {
-    if (loadMoreTrigger.value) {
       observer.observe(loadMoreTrigger.value)
-    }
+
+      const rect = loadMoreTrigger.value.getBoundingClientRect()
+      if (rect.top < window.innerHeight) {
+        if (hasNextPage.value && !loading.value) {
+          loadPosts(currentPage.value + 1, true)
+        }
+      }
+    })
   })
 })
 
@@ -65,7 +72,7 @@ function timeAgo(dateString) {
   const diffHour = Math.floor(diffMin / 60);
   const diffDay = Math.floor(diffHour / 24);
 
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  const rtf = new Intl.RelativeTimeFormat(navigator.language, { numeric: "auto" });
 
   let parts;
 
@@ -83,7 +90,7 @@ function timeAgo(dateString) {
     parts = rtf.formatToParts(-diffDay, "day");
   } else {
     // 超過三天 → 用日期顯示
-    return date.toLocaleDateString();
+    return date.toLocaleDateString(navigator.language,{year: 'numeric', month: 'long', day: 'numeric'});
   }
 
   // 組合 formatToParts 的結果
