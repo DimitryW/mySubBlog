@@ -35,7 +35,7 @@ onMounted(() => {
     nextTick(() => {
       if (!loadMoreTrigger.value) return
 
-      // 建立 IntersectionObserver，提前 100px 觸發
+      // 建立 IntersectionObserver
       observer = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting && hasNextPage.value && !loading.value) {
