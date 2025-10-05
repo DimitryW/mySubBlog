@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load socialaccount %}  
+{% load static %}
+
+{% block content %}
+<div class="login-wrapper">
+
+<form method="post" action="{% url 'account_login' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">登入</button>
+</form>
+
+<p>還沒有帳號？ <a id="sign-up-link" href="{% url 'account_signup' %}">註冊</a></p>
+
+<!-- Google 登入按鈕 -->
+<div class="google-login">
+  <div>或</div>
+  <a class="google-btn" href="{% provider_login_url "google" %}">
+    <img src="{% static 'images/google-logo.png' %}" alt="Google Logo" class="google-logo"/>
+    使用 Google 登入
+  </a>
+</div>
+
+</div> 
+
+{% endblock %}

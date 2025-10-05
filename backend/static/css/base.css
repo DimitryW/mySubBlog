@@ -1,6 +1,195 @@
+body {
+  min-height: 100vh;           /* 讓 body 滿高度 */
+  display: flex;
+  justify-content: center;      /* 水平置中 */
+  align-items: center;          /* 垂直置中 */
+  background: var(--color-background-soft); /* 可選背景色 */
+  margin: 0;
+}
+
 .ck-content,
 .ck-content p,
 .ck-content span,
 .ck-content a {
     color: black !important;
+}
+
+body {
+  min-height: 100vh;           
+  display: flex;
+  justify-content: center;      
+  align-items: center;          
+  background: var(--color-background-soft);
+  margin: 0;
+}
+
+.ck-content,
+.ck-content p,
+.ck-content span,
+.ck-content a {
+  color: black !important;
+}
+
+.login-wrapper {
+  color: #222222;
+  width: 100%;
+  max-width: 400px;            /* 🔹 保留單一 max-width，避免重複宣告 // 修改 */
+  padding: 2rem;
+  background: var(--color-background-strong);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-wrapper form input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.login-wrapper label {
+    display: none;          /* 🔹 隱藏標籤，改用 placeholder // 修改 */
+}
+
+/* 但指定 Remember Me 的 label 顯示 */
+.login-wrapper label[for="id_remember"] {
+  display: inline-block;   /* 或 block，看你想要跟 checkbox 在同一行還是換行 */
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.login-wrapper form input[type="checkbox"] {
+  width: auto;      /* 不占滿整行 */
+}
+
+.remember-me {
+  display: flex;
+  justify-content: center;   /* 水平置中 */
+  align-items: center;       /* 垂直置中 */
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.login-wrapper form a,
+.login-wrapper a {
+  font-size: 0.9rem;
+  /* text-decoration: none; */
+  color: var(--color-text);
+  transition: color 0.3s;
+}
+
+.login-wrapper form .forgot-password:hover,
+.login-wrapper .sign-up a:hover {
+  color: #FAA634;
+}
+
+.sign-up {
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+/* 登入按鈕 */
+.login-wrapper button {
+  width: 160px;
+  height: 40px;
+  border-radius: 20px;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  background: #FAA634;
+  border: none;
+  margin: 0 auto;
+  display: block;
+}
+
+.login-wrapper button:hover {
+  background: #ffa629;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.login-wrapper .forgot-password {
+  display: block;
+  text-align: center;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.login-wrapper #id_password_helptext:hover, #sign-up-link:hover {
+  color: #FAA634;
+}
+
+/* 調整表單欄位樣式 */
+.login-wrapper input[type="text"],
+.login-wrapper input[type="email"],
+.login-wrapper input[type="password"] {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* 🔹 Focus 時候變色 */
+.login-wrapper input[type="text"]:focus,
+.login-wrapper input[type="email"]:focus,
+.login-wrapper input[type="password"]:focus {
+  border-color: #FAA634;       /* 改成你想要的顏色 */
+  outline: none;               /* 移除預設的藍框 */
+  box-shadow: 0 0 0 2px rgba(250, 166, 52, 0.2); /* 加一個淡淡外光暈 */
+}
+
+.login-wrapper ul {
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+/* Google 登入區塊 */
+.google-login {
+  margin-top: 1.5rem;          /* 🔹 微調與上方距離，讓排版更舒適 // 修改 */
+  text-align: center;
+}
+
+.google-login div {
+  margin-bottom: 1.2rem;
+  font-size: 14px;
+  color: #666;
+}
+
+.google-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;           /* 🔹 同寬 */
+  max-width: 400px; 
+  gap: 0.5rem;                 /* 🔹 移除重複的 gap 宣告，統一用 0.5rem // 修改 */
+  padding: 0.6rem 0rem;        /* 🔹 微調 padding，讓按鈕看起來更平均 // 修改 */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #444;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.google-btn:hover {
+  background: #f7f7f7;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.google-logo {
+  width: 18px;
+  height: 18px;
 }

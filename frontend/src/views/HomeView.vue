@@ -122,12 +122,15 @@ function timeAgo(dateString) {
 
 <style scoped>
 h1 {
-  width: 90%;
+  color: var(--color-text-1);
+  height: 100px;
+  width: 80%;
   margin: 0 auto;
+  line-height: 100px;
 }
 
 h2 {
-  color: #fff;
+  color: var(--color-text-1);
   font-size: 26px;
 }
 
@@ -143,13 +146,13 @@ h2 {
 
 /* 卡片 */
 .post-card {
-  width: 90%; 
+  width: 80%; 
   max-height: 1200px;
-  background: #2a2a2a;
+  background: var(--color-background-strong);
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 1rem;
-  color: #b1b1b1;
+  color: var(--color-text-2);
   text-align: left;           /* 卡片內容靠左對齊 */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }

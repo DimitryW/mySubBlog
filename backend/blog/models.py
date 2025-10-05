@@ -25,4 +25,4 @@ class Post(models.Model):
     def short_body(self):
         text = strip_tags(self.body)  # 移除 HTML 標籤
         text = text.replace("\n", " ")  # 換行轉空格
-        return text[:200] + "…" if len(text) > 200 else text
+        return text[:500] + "…" if len(text) > 500 else text

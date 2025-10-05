@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,7 @@ SECRET_KEY = "django-insecure-k5e+u&73!-$ec8-jhz54c*8gm!ko@5_ni8kg3(d8=unhln#xtw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
 ALLOWED_HOSTS = []
 
 
@@ -40,15 +42,54 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_ckeditor_5",
-    "blog",
+    # api
     "corsheaders",
     "rest_framework",
+    # allauth 需要
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
+    # jwt
+    "rest_framework_simplejwt.token_blacklist",
+    # apps
+    "blog",
+    "accounts",
 ]
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,  # 每頁 5 筆
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.SessionAuthentication",
+    ),
 }
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",  # Django 內建
+    "allauth.account.auth_backends.AuthenticationBackend",  # allauth
+]
+
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_LOGOUT_ON_GET = True
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+}
+
+
+LOGIN_REDIRECT_URL = "http://localhost:5173"  # 登入成功後導向首頁
+LOGOUT_REDIRECT_URL = "http://localhost:5173"  # 登出後導向首頁
+
+SOCIALACCOUNT_LOGIN_ON_GET = False  # 點擊社群登入按鈕後，會先導向 allauth 的登入頁面
 
 # CorsMiddleware should be placed as high as possible,
 # especially before any middleware that can generate responses
@@ -58,16 +99,25 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    # allauth 需要
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vue dev server
 ]
+
+CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+
+# 允許攜帶 cookie
+CORS_ALLOW_CREDENTIALS = True
+
 
 ROOT_URLCONF = "blog_project.urls"
 
@@ -122,8 +172,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
+LANGUAGE_CODE = "zh-hant"  # 或 zh-hans
 
-LANGUAGE_CODE = "en-us"
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 TIME_ZONE = "UTC"
 

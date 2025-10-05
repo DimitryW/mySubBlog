@@ -3,12 +3,22 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchPost } from '@/api/postService'
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL
 const route = useRoute()
 const post = ref(null)
+const notLoggedIn = ref(false)
 
 onMounted(async () => {
-  const response = await fetchPost(route.params.id)
-  post.value = response.data
+  try {
+    const res = await fetchPost(route.params.id)
+    post.value = res.data
+  } catch (err) {
+    if (err.response && [401, 403].includes(err.response.status)) {
+      notLoggedIn.value = true
+    } else {
+      alert('載入失敗或文章不存在')
+    }
+  }
 })
 
 function toDateTimeStr(dateString) {
@@ -30,12 +40,13 @@ function toDateTimeStr(dateString) {
       <h1>{{ post.title }}</h1>
       <p>{{ toDateTimeStr(post.created_at) }}</p>
       <br/>
-      <p v-html=post.body></p>
+      <p v-html="post.body"></p>
       <img v-if="post.image" :src="post.image" alt="post image" style="max-width: 300px">
     </div>
   </div>
-  <div v-else>
-    Loading...
+  <div v-else-if="notLoggedIn">
+    <p>你尚未登入，請先登入查看文章</p>
+    <a :href="`${API_BASE}/accounts/login/`">前往登入</a>
   </div>
 </template>
 

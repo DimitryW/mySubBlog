@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-wrapper">
+  <h2>註冊帳號</h2>
+  <form method="post" action="{% url 'account_signup' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">註冊</button>
+  </form>
+</div>
+{% endblock %}

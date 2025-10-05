@@ -2,11 +2,24 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% if user.is_authenticated %}
+  <p>Hi {{ user.username }}!</p>
+  <a href="{% url 'account_logout' %}">登出</a>
+{% else %}
+  {% load socialaccount %} 
+  {% get_providers as socialaccount_providers %}
+  {% for provider in socialaccount_providers %}
+      <a href="{% provider_login_url provider.id %}">Log in with {{ provider.name }}</a>
+  {% endfor %}
+{% endif %}
+
 {% for post in posts %}
 <div class="post-entry">
  <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
  <p>Author: {{ post.author }}</p>
  <pre style="white-space: pre-wrap;">{{ post.short_body }}</pre>
+ 
 </div>
 {% endfor %}
 {% endblock content %}

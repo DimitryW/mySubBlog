@@ -2,7 +2,7 @@
 from django.urls import path, include
 
 # from .views import post_list, post_detail
-from .views import PostViewSet
+from .views import PostViewSet, home
 from rest_framework.routers import DefaultRouter
 
 # urlpatterns = [
@@ -13,5 +13,6 @@ router = DefaultRouter()
 router.register("posts", PostViewSet)
 
 urlpatterns = [
-    path("api/", include(router.urls)),  # /api/posts/
+    path("", include(router.urls)),  # /api/blog/posts/
+    path("home/", home, name="home"),
 ]
