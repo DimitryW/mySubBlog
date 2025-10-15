@@ -15,6 +15,8 @@
   --vt-c-black-highlight-1: #424242ff;
   --vt-c-black-highlight-2: rgb(50, 50, 50);
 
+  --vt-c-gray-light: #b3b3b3;
+
   --vt-c-indigo: #505050;
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
@@ -24,8 +26,10 @@
 
   --vt-c-text-light-1: var(--vt-c-black-soft);
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-light-3: rgb(45, 45, 45);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+  --vt-c-text-dark-3: rgb(213, 213, 213);
 }
 
 /* semantic color variables for this project */
@@ -36,6 +40,9 @@
   --color-background-strong: var(--vt-c-white-strong);
   --color-background-highlight-1: var(--vt-c-white-highlight-1);
   --color-background-highlight-2: var(--vt-c-white-highlight-2);
+  --color-button-text: #fff;
+  --color-button-highlight-1: var(--vt-c-white-highlight-1);
+  --color-button-highlight-2: var(--color-background-highlight-1);
 
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
@@ -43,6 +50,7 @@
   --color-heading: var(--vt-c-text-light-1);
   --color-text-1: var(--vt-c-text-light-1);
   --color-text-2: var(--vt-c-text-light-2);
+  --color-text-3: var(--vt-c-text-light-3);
 
   --section-gap: 160px;
 }
@@ -56,10 +64,14 @@ html.dark {
     --color-background-highlight-2: var(--vt-c-black-highlight-2);
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
+    --color-button-text: var(--vt-c-text-light-1);
+    --color-button-highlight-1: var(--vt-c-white-mute);
+    --color-button-highlight-2: var(--vt-c-gray-light);
 
     --color-heading: var(--vt-c-text-dark-1);
     --color-text-1: var(--vt-c-text-dark-1);
     --color-text-2: var(--vt-c-text-dark-2);
+    --color-text-3: var(--vt-c-text-dark-3);
 }
 
 html, body, #app {

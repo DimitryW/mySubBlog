@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-k5e+u&73!-$ec8-jhz54c*8gm!ko@5_ni8kg3(d8=unhln#xtw
 DEBUG = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "f61e6f9446a5.ngrok-free.app"]
 
 
 # Application definition
@@ -57,6 +57,9 @@ INSTALLED_APPS = [
     # apps
     "blog",
     "accounts",
+    "django_paddle_billing",
+    "django_json_widget",
+    "paddle_sync",
 ]
 
 REST_FRAMEWORK = {
@@ -114,7 +117,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Vue dev server
 ]
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:5173"]
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",
+    "https://f61e6f9446a5.ngrok-free.app",
+]
 
 # 允許攜帶 cookie
 CORS_ALLOW_CREDENTIALS = True
@@ -354,5 +360,24 @@ CKEDITOR_5_CONFIGS = {
             "startIndex": "true",
             "reversed": "true",
         }
+    },
+}
+
+# Paddle 設定
+PADDLE_BILLING = {
+    "PADDLE_API_TOKEN": config("PADDLE_API_KEY"),
+    "PADDLE_SECRET_KEY": "pdl_ntfset_01k7gpg2z2yyqvmb4m9jq941kf_vWFNNGCZcP7XN+TiGdAEVEh8wBVO1Wor",
+    "PADDLE_API_URL": "https://sandbox-api.paddle.com",  # Sandbox 測試用
+    "PADDLE_SANDBOX": True,  # True: 沙箱環境
+    "PADDLE_ACCOUNT_MODEL": "auth.User",
+    "PADDLE_ACCOUNT_LINK_BY_CUSTOMER": True,
+    "PADDLE_API_KEY": config("PADDLE_API_KEY"),
+}
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_BEAT_SCHEDULE = {
+    "sync-paddle-products-every-hour": {
+        "task": "paddle_sync.tasks.sync_products_task",
+        "schedule": 3600.0,  # 每小時執行一次
     },
 }

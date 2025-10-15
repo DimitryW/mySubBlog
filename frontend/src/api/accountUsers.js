@@ -13,8 +13,10 @@ export async function fetchUser() {
     isLoggedIn.value = !!data.username
     username.value = data.username || ''
     console.log('User fetched:', data)
+    return data
   } catch (err) {
     console.error('Fetch user failed', err)
+    return null
   }
 }
 

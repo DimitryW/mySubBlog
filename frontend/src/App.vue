@@ -1,8 +1,11 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import { LogIn, LogOut, Home, Info } from 'lucide-vue-next'
+import { useUserStore } from './stores/user'
+import { LogIn, LogOut, Home, Info, CreditCard, User } from 'lucide-vue-next'
 import { isLoggedIn, username, login, logout, fetchUser } from '../src/api/accountUsers.js'
+
+const userStore = useUserStore()
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 const isDark = ref(false)
 
@@ -10,6 +13,13 @@ function toggleTheme() {
   isDark.value = !isDark.value
   document.documentElement.classList.toggle('dark', isDark.value)
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
+
+async function loadUser() {
+  const data = await fetchUser()
+  userStore.setUser(data)
+  console.log('user')
+  console.log(data)
 }
 
 // 深色模式：讀取使用者偏好 or 系統預設
@@ -22,7 +32,7 @@ onMounted(() => {
   }
   document.documentElement.classList.toggle('dark', isDark.value)
 
-  fetchUser()
+  loadUser()
 })
 </script>
 
@@ -48,6 +58,14 @@ onMounted(() => {
         <RouterLink to="/">
           <Home class="icon" /> Home
         </RouterLink>
+        <RouterLink v-if="isLoggedIn" to="/subscription">
+          <CreditCard class="icon" /> My Subscription
+        </RouterLink>
+        <!--
+        <RouterLink v-if="isLoggedIn" to="/account">
+          <User class="icon" /> Account
+        </RouterLink>
+        -->
         <RouterLink to="/about">
           <Info class="icon" /> About
         </RouterLink>
@@ -62,6 +80,7 @@ onMounted(() => {
 header {
   line-height: 1.5;
   background: var(--color-background-soft);
+  padding: 10px 40px;
 }
 
 .logo {

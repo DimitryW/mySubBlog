@@ -3,13 +3,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from .serializers import UserSerializer
 
 
 @api_view(["GET"])
 def user_info(request):
     if request.user.is_authenticated:
-        serializer = UserSerializer(request.user)
+        user = User.objects.select_related("paddle_user").get(pk=request.user.pk)
+        serializer = UserSerializer(user)
         return Response(serializer.data)
     return Response({})  # 未登入回傳空物件
 

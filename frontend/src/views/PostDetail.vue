@@ -54,5 +54,6 @@ function toDateTimeStr(dateString) {
 .post {
   width: 90%;
   margin: 0 auto;
+  color: var(--color-text-1);
 }
 </style>
