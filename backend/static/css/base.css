@@ -14,15 +14,6 @@ body {
     color: black !important;
 }
 
-body {
-  min-height: 100vh;           
-  display: flex;
-  justify-content: center;      
-  align-items: center;          
-  background: var(--color-background-soft);
-  margin: 0;
-}
-
 .ck-content,
 .ck-content p,
 .ck-content span,

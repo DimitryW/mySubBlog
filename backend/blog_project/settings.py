@@ -366,8 +366,10 @@ CKEDITOR_5_CONFIGS = {
 # Paddle 設定
 PADDLE_BILLING = {
     "PADDLE_API_TOKEN": config("PADDLE_API_KEY"),
-    "PADDLE_SECRET_KEY": "pdl_ntfset_01k7gpg2z2yyqvmb4m9jq941kf_vWFNNGCZcP7XN+TiGdAEVEh8wBVO1Wor",
-    "PADDLE_API_URL": "https://sandbox-api.paddle.com",  # Sandbox 測試用
+    "PADDLE_SECRET_KEY": config("PADDLE_SECRET_KEY"),
+    "PADDLE_API_URL": (
+        config("PADDLE_SANDBOX_API_URL") if DEBUG else config("PADDLE_API_URL")
+    ),
     "PADDLE_SANDBOX": True,  # True: 沙箱環境
     "PADDLE_ACCOUNT_MODEL": "auth.User",
     "PADDLE_ACCOUNT_LINK_BY_CUSTOMER": True,
