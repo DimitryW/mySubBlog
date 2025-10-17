@@ -1,9 +1,14 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
+import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
+import { fetchMySubscription } from '@/api/subscription.js'
+import { changeSubscription } from '@/api/subscription.js'
 
-const userStore = useUserStore()
-let paddleCustomerId = computed(() => userStore.user?.paddle_customer_id)
+const subscription = ref({});
+const currentPriceId = ref('');
+const userStore = useUserStore();
+let paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
 
 const CONFIG = {
   clientToken: import.meta.env.VITE_PADDLE_TOKEN,
@@ -21,6 +26,8 @@ const CONFIG = {
 
 const billingCycle = ref("month");
 const country = ref("US");
+const tier1PriceId = ref("");
+const tier2PriceId = ref("");
 const tier1Price = ref("$10.00");
 const tier2Price = ref("$15.00");
 const tier1Desc = ref("");
@@ -54,13 +61,18 @@ async function updatePrices() {
       address: { countryCode: country.value }
     });
 
+    console.log(result);
+
     result.data.details.lineItems.forEach((item) => {
+      const priceId = item.price.id;
       const price = item.formattedTotals.subtotal;
       const desc = item.product.description;
-      if (item.price.id === CONFIG.prices.tier1[billingCycle.value]) {
+      if (priceId === CONFIG.prices.tier1[billingCycle.value]) {
+        tier1PriceId.value = priceId;
         tier1Price.value = price;
         tier1Desc.value = desc;
-      } else if (item.price.id === CONFIG.prices.tier2[billingCycle.value]) {
+      } else if (priceId === CONFIG.prices.tier2[billingCycle.value]) {
+        tier2PriceId.value = priceId;
         tier2Price.value = price;
         tier2Desc.value = desc;
       }
@@ -78,7 +90,7 @@ function updateBillingCycle(cycle) {
 }
 
 function openCheckout(plan) {
-  console.log(paddleCustomerId)
+  console.log('paddleCustomerId: ', paddleCustomerId.value)
   if (!paddleReady || !paddleCustomerId.value) return
   Paddle.Checkout.open({
     items: [{ priceId: CONFIG.prices[plan][billingCycle.value], quantity: 1 }],
@@ -91,71 +103,120 @@ function openCheckout(plan) {
   });
 }
 
-onMounted(() => {
+onMounted(async () => {
   initPaddle();
+  try {
+    subscription.value = await fetchMySubscription();
+    currentPriceId.value = subscription.value.price_id;
+    console.log(currentPriceId);
+    console.log("My subscription:", subscription.value);
+  } catch (err) {
+    console.error("Failed to fetch subscription:", err);
+  }
 });
+
+const router = useRouter() 
+const isSwitching = ref(false);
+
+async function handleSwitchPlan(newPriceId) {
+  if (isSwitching.value) return;
+  isSwitching.value = true;
+
+  try {
+    await changeSubscription(subscription.value.id, newPriceId);
+    // 成功跳轉到成功頁
+    router.push({ name: 'subscription-success' });
+  } catch (err) {
+    console.error("Failed to switch plan:", err);
+    alert("Failed to switch subscription.");
+  } finally {
+    isSwitching.value = false;
+  }
+}
 </script>
 
 <template>
   <div class="subscription">
-    <h1 class="title">Choose Your Plan</h1>
+    
 
-    <!-- Billing Toggle -->
-    <div class="billing-toggle">
-      <button
-        :class="{ active: billingCycle === 'month' }"
-        @click="updateBillingCycle('month')"
-      >
-        Monthly
-      </button>
-      <button
-        :class="{ active: billingCycle === 'year' }"
-        @click="updateBillingCycle('year')"
-      >
-        Yearly (Save Up to 16%)
-      </button>
-    </div>
-
-    <!-- Pricing Grid -->
-    <div class="pricing-grid">
-      <!-- Tier 1 -->
-      <div class="plan-card">
-        <h3>Tier 1</h3>
-        <div class="price">
-          <span class="amount">
-            <template v-if="isLoadingPrices">
-              <span class="spinner"></span>
-            </template>
-            <template v-else>
-              {{ tier1Price }}
-            </template>
-          </span>
-          <span class="cycle">/ {{ billingCycle }}</span>
-        </div>
-        <button @click="openCheckout('tier1')">Get started</button>
-        <div class="productDesc">
-          <span>{{tier1Desc}}</span>
-        </div>
+    <div>
+      <h1 class="title">Current Subscription</h1>
+      <div v-if="!subscription.name" class="subscription-card">
+        You have no active subscription.
+      </div>
+      <div v-else class="subscription-card">
+        <h2>{{ subscription.name }}</h2>
+        <p>{{ subscription.desc }}</p>
+        <hr />
+        <h3>Payment Detail</h3>
+        <p>Price: ${{ subscription.price }}</p>
+        <p>Next payment: {{ subscription.next_payment }}</p>
+        <p>Status: {{ subscription.status }}</p>
       </div>
 
-      <!-- Tier 2 -->
-      <div class="plan-card popular">
-        <div class="badge">Popular</div>
-        <h3>Tier 2</h3>
-        <div class="price">
-          <span class="amount">
-            <template v-if="isLoadingPrices">
-              <span class="spinner"></span>
-            </template>
-            <template v-else>
-              {{ tier2Price }}
-            </template>
-          </span>
-          <span class="cycle">/ {{ billingCycle }}</span>
+      <h1 v-if="!subscription.name" class="title">Upgrade Your Plan</h1>
+      <h1 v-else class="title">Change Your Plan</h1>
+      <!-- Billing Toggle -->
+      <div class="billing-toggle">
+        <button
+          :class="{ active: billingCycle === 'month' }"
+          @click="updateBillingCycle('month')"
+        >
+          Monthly
+        </button>
+        <button
+          :class="{ active: billingCycle === 'year' }"
+          @click="updateBillingCycle('year')"
+        >
+          Yearly (Save Up to 16%)
+        </button>
+      </div>
+
+      <!-- Pricing Grid -->
+      <div class="pricing-grid">
+        <!-- Tier 1 -->
+        <div class="plan-card">
+          <h3>Tier 1</h3>
+          <div class="price">
+            <span class="amount">
+              <template v-if="isLoadingPrices">
+                <span class="spinner"></span>
+              </template>
+              <template v-else>
+                {{ tier1Price }}
+              </template>
+            </span>
+            <span class="cycle">/ {{ billingCycle }}</span>
+          </div>
+          <button v-if="!subscription.name" @click="openCheckout('tier1')">Get Started</button>
+          <button :disabled="isSwitching" v-else-if="currentPriceId !== tier1PriceId" @click="handleSwitchPlan(tier1PriceId)">Switch Plan</button>
+          <p v-else class="current-plan">Current Plan</p>
+          <div class="productDesc">
+            <span>{{tier1Desc}}</span>
+          </div>
         </div>
-        <button @click="openCheckout('tier2')">Get started</button>
-        <div class="productDesc">
-          <span>{{tier2Desc}}</span>
+
+        <!-- Tier 2 -->
+        <div class="plan-card popular">
+          <div class="badge">Popular</div>
+          <h3>Tier 2</h3>
+          <div class="price">
+            <span class="amount">
+              <template v-if="isLoadingPrices">
+                <span class="spinner"></span>
+              </template>
+              <template v-else>
+                {{ tier2Price }}
+              </template>
+            </span>
+            <span class="cycle">/ {{ billingCycle }}</span>
+          </div>
+          <button v-if="!subscription.name" @click="openCheckout('tier2')">Get Started</button>
+          <button :disabled="isSwitching" v-else-if="currentPriceId !== tier2PriceId" @click="handleSwitchPlan(tier2PriceId)">Switch Plan</button>
+          <p v-else class="current-plan">Current Plan</p>
+          <div class="productDesc">
+            <span>{{tier2Desc}}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -169,12 +230,34 @@ onMounted(() => {
   text-align: center;
 }
 
+.subscription-card {
+  /* width: 80%; */
+  max-width: 800px;
+  margin: 0 auto 3rem;
+  padding: 2rem 4rem;
+  max-height: 1200px;
+  background: var(--color-background-strong);
+  border: 1px solid var(--color-background-highlight-1);
+  border-radius: 8px;
+  /* box-shadow: 0 2px 6px rgba(0,0,0,0.1); */
+  color: var(--color-text-1);
+  text-align: left;           /* 卡片內容靠左對齊 */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
 .title {
   color: var(--color-text-1);
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 2rem;
 }
+
+hr {
+  border: 0; 
+  border-top: 1px solid var(--color-background-highlight-2); 
+  margin: 0.5rem 0;
+  }
+
 
 .billing-toggle {
   margin: 1.5rem;
@@ -202,14 +285,15 @@ onMounted(() => {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 2rem;
+  gap: 5rem;
 }
 
 .plan-card {
   border: 1px solid var(--color-background-highlight-2);
   border-radius: 8px;
   padding: 2rem;
-  width: 280px;
+  margin: 1rem 0 2.5rem;
+  width: 320px;
   position: relative;
   background: var(--color-background-strong);
   color: var(--color-text-3);
@@ -248,6 +332,7 @@ button {
   border: none;
   background: var(--color-background-highlight-1);
   color: #fff;
+  font-size: 15px;
   font-weight: 600;
   border-radius: 4px;
   cursor: pointer;
@@ -257,6 +342,20 @@ button {
 button:hover {
   transform: scale(1.06); 
   box-shadow: inset 0 0 0 2px var(--color-button-highlight-2);
+}
+
+.current-plan {
+  height: 39.5px;
+  line-height: 39.5px;
+  width: 70%;
+  margin: 0 auto;
+  border: none;
+  background: var(--color-background-mute);
+  color: var(--color-text-2);
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .spinner {

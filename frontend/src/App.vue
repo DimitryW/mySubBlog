@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
 import { LogIn, LogOut, Home, Info, CreditCard, User } from 'lucide-vue-next'
-import { isLoggedIn, username, login, logout, fetchUser } from '../src/api/accountUsers.js'
+import { isLoggedIn, username, login, logout, fetchUser } from '@/api/accountUsers.js'
 
 const userStore = useUserStore()
 const API_BASE = import.meta.env.VITE_API_BASE_URL
@@ -18,8 +18,6 @@ function toggleTheme() {
 async function loadUser() {
   const data = await fetchUser()
   userStore.setUser(data)
-  console.log('user')
-  console.log(data)
 }
 
 // 深色模式：讀取使用者偏好 or 系統預設
