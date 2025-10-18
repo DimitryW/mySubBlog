@@ -106,6 +106,9 @@ function timeAgo(dateString) {
       <RouterLink :to="`/posts/${post.id}`">
         <h2>{{ post.title }}</h2>
         <p>{{ timeAgo(post.created_at) }}</p>
+          <div class="tag-wrapper">
+          <p class="tag" v-for="tag in post.tags" :key="tag">{{ tag }}</p>
+        </div>
         <br/>
         <p v-html="post.short_body"></p>
         </RouterLink>

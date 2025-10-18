@@ -59,7 +59,9 @@ INSTALLED_APPS = [
     "accounts",
     "django_paddle_billing",
     "django_json_widget",
+    # third-party app
     "paddle_sync",
+    "taggit",
 ]
 
 REST_FRAMEWORK = {

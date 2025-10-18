@@ -39,6 +39,9 @@ function toDateTimeStr(dateString) {
     <div class="post">
       <h1>{{ post.title }}</h1>
       <p>{{ toDateTimeStr(post.created_at) }}</p>
+      <div class="tag-wrapper">
+        <p class="tag" v-for="tag in post.tags" :key="tag">{{ tag }}</p>
+      </div>
       <br/>
       <p v-html="post.body"></p>
       <img v-if="post.image" :src="post.image" alt="post image" style="max-width: 300px">
@@ -55,5 +58,9 @@ function toDateTimeStr(dateString) {
   width: 90%;
   margin: 0 auto;
   color: var(--color-text-1);
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  padding: 3rem 3rem 5rem;
+  margin: 0 2rem;
 }
+
 </style>

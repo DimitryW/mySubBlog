@@ -14,6 +14,7 @@
   --vt-c-black-strong: #2a2a2a;
   --vt-c-black-highlight-1: #424242ff;
   --vt-c-black-highlight-2: rgb(50, 50, 50);
+  --vt-c-black-highlight-3: rgb(76, 76, 76);
 
   --vt-c-gray-light: #b3b3b3;
 
@@ -40,6 +41,7 @@
   --color-background-strong: var(--vt-c-white-strong);
   --color-background-highlight-1: var(--vt-c-white-highlight-1);
   --color-background-highlight-2: var(--vt-c-white-highlight-2);
+  --color-background-highlight-3: var(--vt-c-white-highlight-2);
   --color-button-text: #fff;
   --color-button-highlight-1: var(--vt-c-white-highlight-1);
   --color-button-highlight-2: var(--color-background-highlight-1);
@@ -62,6 +64,7 @@ html.dark {
     --color-background-strong: var(--vt-c-black-strong);
     --color-background-highlight-1: var(--vt-c-black-highlight-1);
     --color-background-highlight-2: var(--vt-c-black-highlight-2);
+    --color-background-highlight-3: var(--vt-c-black-highlight-3);
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
     --color-button-text: var(--vt-c-text-light-1);

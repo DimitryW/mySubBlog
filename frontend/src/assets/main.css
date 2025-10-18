@@ -41,3 +41,15 @@ a {
     width: 100%;
   }
 }
+
+.tag-wrapper {
+  display: flex;
+}
+
+.tag {
+  border-radius: 999px;
+  margin: 0.2rem;
+  padding: 0 0.5rem;
+  background: var(--color-background-highlight-3);
+  color: var(--color-text-3);
+}
