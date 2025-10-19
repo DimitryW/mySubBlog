@@ -10,6 +10,7 @@ const route = useRoute()
 const subscription = ref({});
 const currentPriceId = ref('');
 const userStore = useUserStore();
+const selectedPriceId = ref(''); 
 let paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
 
 const CONFIG = {
@@ -53,6 +54,7 @@ function initPaddle() {
 
 async function updatePrices() {
   if (!paddleReady) return;
+  selectedPriceId.value = '';
   isLoadingPrices.value = true;
   try {
     const result = await Paddle.PricePreview({
@@ -195,8 +197,8 @@ async function handleSwitchPlan(newPriceId) {
       <!-- Pricing Grid -->
       <div class="pricing-grid">
         <!-- Tier 1 -->
-        <div class="plan-card">
-          <h3>Tier 1</h3>
+        <div class="plan-card" :class="{ selected: selectedPriceId === tier1PriceId }" @click="selectedPriceId = tier1PriceId">
+          <h3 class="tier">Tier 1<p class="current-plan" v-if="currentPriceId === tier1PriceId">current</p></h3>
           <div class="price">
             <span class="amount">
               <template v-if="isLoadingPrices">
@@ -208,7 +210,7 @@ async function handleSwitchPlan(newPriceId) {
             </span>
             <span class="cycle">/ {{ billingCycle }}</span>
           </div>
-          <button v-if="!subscription.name" @click="openCheckout('tier1')">Get Started</button>
+          <!-- <button v-if="!subscription.name" @click="openCheckout('tier1')">Get Started</button>
           <button :disabled="isSwitching" v-else-if="currentPriceId !== tier1PriceId" @click="handleSwitchPlan(tier1PriceId)">
           <template v-if="isSwitching">
           <span class="spinner"></span> Switching...
@@ -216,17 +218,17 @@ async function handleSwitchPlan(newPriceId) {
           <template v-else>
             Switch Plan
           </template>
-          </button>
-          <p v-else class="current-plan">Current Plan</p>
+          </button> -->
+          <!-- <p v-if="currentPriceId === tier1PriceId" class="current-plan">Current Plan</p> -->
           <div class="productDesc">
             <span>{{tier1Desc}}</span>
           </div>
         </div>
 
         <!-- Tier 2 -->
-        <div class="plan-card popular">
-          <div class="badge">Popular</div>
-          <h3>Tier 2</h3>
+        <div class="plan-card popular" :class="{ selected: selectedPriceId === tier2PriceId }" @click="selectedPriceId = tier2PriceId">
+          <!-- <div class="badge">Popular</div> -->
+          <h3 class="tier">Tier 2<p class="current-plan" v-if="currentPriceId === tier2PriceId">current</p></h3>
           <div class="price">
             <span class="amount">
               <template v-if="isLoadingPrices">
@@ -238,7 +240,7 @@ async function handleSwitchPlan(newPriceId) {
             </span>
             <span class="cycle">/ {{ billingCycle }}</span>
           </div>
-          <button v-if="!subscription.name" @click="openCheckout('tier2')">Get Started</button>
+          <!-- <button v-if="!subscription.name" @click="openCheckout('tier2')">Get Started</button>
           <button :disabled="isSwitching" v-else-if="currentPriceId !== tier2PriceId" @click="handleSwitchPlan(tier2PriceId)">
           <template v-if="isSwitching">
           <span class="spinner"></span> Switching...
@@ -246,11 +248,25 @@ async function handleSwitchPlan(newPriceId) {
           <template v-else>
             Switch Plan
           </template>
-          </button>
-          <p v-else class="current-plan">Current Plan</p>
+          </button> -->
+          <!-- <p v-if="currentPriceId === tier2PriceId" class="current-plan">Current Plan</p> -->
           <div class="productDesc">
             <span>{{tier2Desc}}</span>
           </div>
+        </div>
+
+      </div>
+
+      <div class="switch-btn-wrapper">
+        <div v-if="selectedPriceId && currentPriceId !== selectedPriceId">
+          <button :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
+            <template v-if="isSwitching">
+              <span class="spinner"></span> Switching...
+            </template>
+            <template v-else>
+              Switch Plan
+            </template>
+          </button>
         </div>
       </div>
     </div>
@@ -283,18 +299,23 @@ async function handleSwitchPlan(newPriceId) {
   color: var(--color-text-1);
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.tier {
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
 }
 
 hr {
   border: 0; 
-  border-top: 1px solid var(--color-background-highlight-2); 
+  border-top: 1px solid var(--color-background-highlight-3); 
   margin: 0.5rem 0;
   }
 
 
 .billing-toggle {
-  margin: 1.5rem;
   height: 3rem;
 }
 
@@ -309,9 +330,8 @@ hr {
 }
 
 .billing-toggle button.active {
-  background: var(--color-button-highlight-1);
-  border: 1px solid var(--color-background-highlight-1);
-  color: var(--color-button-text);
+  border: 2px solid var(--color-button-highlight-1);
+  color: var(--color-text-1);
   font-weight: 600;
 }
 
@@ -319,11 +339,11 @@ hr {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 5rem;
+  gap: 1rem 5rem;
 }
 
 .plan-card {
-  border: 1px solid var(--color-background-highlight-2);
+  border: 1px solid var(--color-background-highlight-1);
   border-radius: 8px;
   padding: 2rem;
   margin: 1rem 0 2.5rem;
@@ -331,12 +351,17 @@ hr {
   position: relative;
   background: var(--color-background-strong);
   color: var(--color-text-3);
+  cursor: pointer;
+}
+
+.plan-card.selected {
+  border: 2px solid var(--color-button-highlight-1);
   box-shadow: 0 2px 6px rgba(0,0,0,0.08),
               0 6px 20px rgba(0,0,0,0.12);
 }
 
 .plan-card.popular {
-  border: 2px solid var(--color-button-highlight-1);
+  /* border: 2px solid var(--color-button-highlight-1); */
 }
 
 .plan-card .badge {
@@ -361,6 +386,10 @@ hr {
   color: var(--color-text-1);
 }
 
+.switch-btn-wrapper {
+  height: 3rem;
+}
+
 button {
   padding: 0.75rem 1.5rem;
   border: none;
@@ -375,20 +404,20 @@ button {
 
 button:hover {
   transform: scale(1.06); 
-  box-shadow: inset 0 0 0 2px var(--color-button-highlight-2);
 }
 
 .current-plan {
-  height: 39.5px;
-  line-height: 39.5px;
-  width: 70%;
+  position: absolute;
+  top: 0.5rem;
+  left: 10px;
   margin: 0 auto;
+  padding: 0 1rem;
   border: none;
-  background: var(--color-background-mute);
-  color: var(--color-text-2);
+  background: var(--color-background-highlight-3);
+  color: var(--color-text-3);
+  font-size: 0.8rem;
   font-weight: 600;
   border-radius: 999px;
-  cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
