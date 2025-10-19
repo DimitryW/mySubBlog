@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
-import { LogIn, LogOut, Home, Info, CreditCard, User } from 'lucide-vue-next'
+import { LogIn, LogOut, Home, Info, CreditCard, User, BookMarked } from 'lucide-vue-next'
 import { isLoggedIn, username, login, logout, fetchUser } from '@/api/accountUsers.js'
 
 const userStore = useUserStore()
@@ -49,6 +49,7 @@ onMounted(() => {
         <div class="login" v-if="isLoggedIn">
           <a @click="logout"><LogOut class="icon" />Logout</a>
         </div>
+
         <div class="logout" v-else>
           <a @click="login"><LogIn class="icon" />Login</a>
         </div>
@@ -56,14 +57,21 @@ onMounted(() => {
         <RouterLink to="/">
           <Home class="icon" /> Home
         </RouterLink>
+
+        <RouterLink to="/topics">
+          <BookMarked class="icon" /> Topics
+        </RouterLink>
+
         <RouterLink v-if="isLoggedIn" to="/subscription">
           <CreditCard class="icon" /> My Subscription
         </RouterLink>
+
         <!--
         <RouterLink v-if="isLoggedIn" to="/account">
           <User class="icon" /> Account
         </RouterLink>
         -->
+
         <RouterLink to="/about">
           <Info class="icon" /> About
         </RouterLink>

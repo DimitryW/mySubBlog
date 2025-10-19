@@ -11,6 +11,7 @@ const notLoggedIn = ref(false)
 onMounted(async () => {
   try {
     const res = await fetchPost(route.params.id)
+    console.log(res)
     post.value = res.data
   } catch (err) {
     if (err.response && [401, 403].includes(err.response.status)) {

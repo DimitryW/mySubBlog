@@ -15,6 +15,7 @@ async function loadPosts(page = 1, append = false) {
   loading.value = true
   try {
     const response = await fetchPosts(page)
+    console.log(response)
     if (append) {
       posts.value.push(...response.data.results)
     } else {

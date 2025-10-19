@@ -4,6 +4,7 @@ import AboutView from '@/views/AboutView.vue'
 import PostDetail from '@/views/PostDetail.vue'
 import SubscriptionView from '@/views/SubscriptionView.vue'
 import SubscriptionSuccess from '@/views/SubscriptionSuccess.vue'
+import TopicView from '@/views/TopicView.vue'
 
 
 const router = createRouter({
@@ -14,6 +15,7 @@ const router = createRouter({
     {path: '/posts/:id', name: 'post-detail', component: PostDetail},
     {path: '/subscription', name: 'subscription', component: SubscriptionView},
     {path: '/subscription-success', name: 'subscription-success', component: SubscriptionSuccess},
+    {path: '/topics', name: 'topics', component: TopicView},
   ],
 })
 

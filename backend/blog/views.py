@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post
+from .models import Post, Category
 from rest_framework import viewsets
-from .serializers import PostSerializer
+from .serializers import PostSerializer, CategorySerializer
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 
@@ -9,14 +9,10 @@ def home(request):
     return render(request, "home.html")
 
 
-# def post_list(request):
-#     posts = Post.objects.all()
-#     return render(request, "home.html", {"posts": posts})
-
-
-# def post_detail(request, pk):
-#     post = get_object_or_404(Post, pk=pk)
-#     return render(request, "post_detail.html", {"post": post})
+class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Category.objects.all().order_by("name")
+    serializer_class = CategorySerializer
+    pagination_class = None
 
 
 class PostViewSet(viewsets.ModelViewSet):
