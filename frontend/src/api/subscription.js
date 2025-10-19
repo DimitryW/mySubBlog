@@ -12,6 +12,8 @@ export async function fetchMySubscription() {
 }
 
 export async function changeSubscription(subscriptionId, newPriceId) {
+  console.log("Changing subscription:", subscriptionId, newPriceId);
+
   const res = await axios.post(`${API_BASE}/api/paddle/change-subscription/`, {
     subscription_id: subscriptionId,
     new_price_id: newPriceId,

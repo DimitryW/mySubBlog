@@ -18,3 +18,7 @@ staticfiles/
 # Node.js / frontend
 node_modules/
 dist/
+
+# Django logs
+*.log
+django.log

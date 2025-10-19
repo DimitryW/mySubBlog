@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     "django_paddle_billing",
     "django_json_widget",
     # third-party app
-    "paddle_sync",
+    "paddle_sync.apps.PaddleSyncConfig",
     "taggit",
 ]
 
@@ -383,5 +383,31 @@ CELERY_BEAT_SCHEDULE = {
     "sync-paddle-products-every-hour": {
         "task": "paddle_sync.tasks.sync_products_task",
         "schedule": 3600.0,  # 每小時執行一次
+    },
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "standard": {
+            "format": "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "formatter": "standard",
+        },
+        "file": {
+            "class": "logging.FileHandler",
+            "filename": "django.log",
+            "formatter": "standard",
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"],
+        "level": "INFO" if DEBUG else "WARNING",
     },
 }

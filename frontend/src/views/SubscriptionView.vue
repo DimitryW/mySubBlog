@@ -1,10 +1,12 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRouter } from 'vue-router'
+import { ref, onMounted, computed, watch } from "vue";
+import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { fetchMySubscription } from '@/api/subscription.js'
 import { changeSubscription } from '@/api/subscription.js'
 
+const router = useRouter() 
+const route = useRoute()
 const subscription = ref({});
 const currentPriceId = ref('');
 const userStore = useUserStore();
@@ -92,30 +94,48 @@ function updateBillingCycle(cycle) {
 function openCheckout(plan) {
   console.log('paddleCustomerId: ', paddleCustomerId.value)
   if (!paddleReady || !paddleCustomerId.value) return
+  let theme = localStorage.getItem('theme');
+  if (!theme) {
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    theme = isDark ? "dark" : "light";
+  }
   Paddle.Checkout.open({
     items: [{ priceId: CONFIG.prices[plan][billingCycle.value], quantity: 1 }],
     customer: { id: paddleCustomerId.value },
     settings: {
-      theme: "light",
+      allowedPaymentMethods: ["card"],
+      theme: theme,
       displayMode: "overlay",
-      variant: "one-page"
+      variant: "one-page",
     }
   });
 }
 
-onMounted(async () => {
-  initPaddle();
+async function fetchSubscription() {
   try {
     subscription.value = await fetchMySubscription();
     currentPriceId.value = subscription.value.price_id;
-    console.log(currentPriceId);
-    console.log("My subscription:", subscription.value);
+    console.log("My subscription updated:", subscription.value);
   } catch (err) {
     console.error("Failed to fetch subscription:", err);
   }
+}
+
+onMounted(() => {
+  initPaddle();
+  fetchSubscription();
 });
 
-const router = useRouter() 
+watch(
+  () => route.fullPath,
+  async () => {
+    if (route.path === "/subscription") {
+      fetchSubscription();
+    }
+  },
+  { immediate: true } // 元件一載入就抓一次
+);
+
 const isSwitching = ref(false);
 
 async function handleSwitchPlan(newPriceId) {
@@ -189,7 +209,14 @@ async function handleSwitchPlan(newPriceId) {
             <span class="cycle">/ {{ billingCycle }}</span>
           </div>
           <button v-if="!subscription.name" @click="openCheckout('tier1')">Get Started</button>
-          <button :disabled="isSwitching" v-else-if="currentPriceId !== tier1PriceId" @click="handleSwitchPlan(tier1PriceId)">Switch Plan</button>
+          <button :disabled="isSwitching" v-else-if="currentPriceId !== tier1PriceId" @click="handleSwitchPlan(tier1PriceId)">
+          <template v-if="isSwitching">
+          <span class="spinner"></span> Switching...
+          </template>
+          <template v-else>
+            Switch Plan
+          </template>
+          </button>
           <p v-else class="current-plan">Current Plan</p>
           <div class="productDesc">
             <span>{{tier1Desc}}</span>
@@ -212,7 +239,14 @@ async function handleSwitchPlan(newPriceId) {
             <span class="cycle">/ {{ billingCycle }}</span>
           </div>
           <button v-if="!subscription.name" @click="openCheckout('tier2')">Get Started</button>
-          <button :disabled="isSwitching" v-else-if="currentPriceId !== tier2PriceId" @click="handleSwitchPlan(tier2PriceId)">Switch Plan</button>
+          <button :disabled="isSwitching" v-else-if="currentPriceId !== tier2PriceId" @click="handleSwitchPlan(tier2PriceId)">
+          <template v-if="isSwitching">
+          <span class="spinner"></span> Switching...
+          </template>
+          <template v-else>
+            Switch Plan
+          </template>
+          </button>
           <p v-else class="current-plan">Current Plan</p>
           <div class="productDesc">
             <span>{{tier2Desc}}</span>

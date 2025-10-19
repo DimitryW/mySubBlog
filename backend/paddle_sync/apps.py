@@ -18,8 +18,9 @@ class PaddleSyncConfig(AppConfig):
                 and self.occurred_at is not None
                 and occurred_at <= self.occurred_at
             ):
-                logging.info("ignoring duplicate webhook event")
+                logging.warning("ignoring duplicate webhook event")
                 return False
+            logging.info("processing webhook event")
             return True
 
         PaddleBaseModel.validate_occurred_at = patched_validate_occurred_at
