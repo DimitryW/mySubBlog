@@ -60,7 +60,6 @@ function toDateTimeStr(dateString) {
   color: var(--color-text-1);
   box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
   padding: 3rem 3rem 5rem;
-  margin: 0 2rem;
 }
 
 </style>

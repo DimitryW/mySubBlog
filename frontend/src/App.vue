@@ -171,7 +171,7 @@ nav a:hover {
     padding-left: calc(var(--section-gap) / 8);
     border-right: 1px solid var(--color-background-highlight-2);
     padding-bottom: 2rem;
-    max-width: 245px;
+    /* max-width: 245px; */
 }
 
   nav a .icon {
