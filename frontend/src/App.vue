@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
-import { LogIn, LogOut, Home, Info, CreditCard, User, BookMarked } from 'lucide-vue-next'
+import { Sun, Moon, LogIn, LogOut, Home, Info, CreditCard, User, BookMarked } from 'lucide-vue-next'
 import { isLoggedIn, username, login, logout, fetchUser } from '@/api/accountUsers.js'
 
 const userStore = useUserStore()
@@ -38,28 +38,31 @@ onMounted(() => {
   <header>
     <div class="wrapper">
       <nav>
-       <!-- 🌙 切換按鈕 -->
-        <div class="theme-switch" @click="toggleTheme">
-          <span class="switch-label">{{ isDark ? '🌙 Dark' : '☀️ Light' }}</span>
-          <div class="switch-track">
-            <div class="switch-thumb" :class="{ dark: isDark }"></div>
+       <!-- 🧭 上方區塊：深色切換 + 登入按鈕 -->
+        <div class="nav-top">
+          <div class="theme-switch" @click="toggleTheme">
+            <div class="switch-icon">
+              <component :is="isDark ? Moon : Sun" class="icon" />
+            </div>
+            <div class="switch-track">
+              <div class="switch-thumb" :class="{ dark: isDark }"></div>
+            </div>
           </div>
-        </div>
 
-        <div class="login" v-if="isLoggedIn">
-          <a @click="logout"><LogOut class="icon" />Logout</a>
-        </div>
-
-        <div class="logout" v-else>
-          <a @click="login"><LogIn class="icon" />Login</a>
+          <div v-if="isLoggedIn" class="auth-btn">
+            <a @click="logout"><LogOut class="icon" />Logout</a>
+          </div>
+          <div v-else class="auth-btn">
+            <a @click="login"><LogIn class="icon" />Login</a>
+          </div>
         </div>
 
         <RouterLink to="/">
           <Home class="icon" /> Home
         </RouterLink>
 
-        <RouterLink to="/topics">
-          <BookMarked class="icon" /> Topics
+        <RouterLink to="/categories">
+          <BookMarked class="icon" /> Categories
         </RouterLink>
 
         <RouterLink v-if="isLoggedIn" to="/subscription">
@@ -98,7 +101,22 @@ nav {
   width: 100%;
   font-size: 12px;
   text-align: center;
-  margin-top: 2rem;
+}
+
+.nav-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 左右排列 */
+  margin: 0.5rem 1rem 1rem 24px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.nav-top * {
+  font-size: inherit !important; 
+  font-weight: inherit !important; 
+  margin: 0 !important;
 }
 
 nav a  {
@@ -132,19 +150,41 @@ nav a:hover {
   border-radius: 10px;      /* 圓角邊邊 */
 }
 
+.auth-btn a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-2);
+  cursor: pointer;
+}
+
+.auth-btn a:hover {
+  background: none !important;
+  border-radius: none !important;
+}
+
 /* 切換按鈕樣式 */
 .theme-switch {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem; /* 讓太陽/月亮與開關間有距離 */
   cursor: pointer;
   user-select: none;
-  margin: 16px 16px 32px 32px;
+}
+
+.switch-icon .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
 .switch-track {
   width: 50px;
-  height: 24px;
+  height: 18px;
   background: var(--color-background-highlight-1);
   border-radius: 999px;
   position: relative;
@@ -152,24 +192,24 @@ nav a:hover {
 }
 
 .switch-thumb {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   background: var(--color-background);
   border-radius: 50%;
   position: absolute;
-  top: 2px;
-  left: 2px;
-  transition: left 0.3s, background 0.3s;
+  left: 0.5px;
+  transition: left 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
 }
 
 .switch-thumb.dark {
-  left: 28px; /* 移到右邊 */
+  left: 30px; /* 移到右邊 */
   background: #FAA634; /* 右邊可換顏色，像黃色太陽 */
 }
 
 .switch-label {
+  width: 60px;
   font-size: 14px;
-  color: var(--color-text-1);
+  color: var(--color-text-2);
 }
 
 
@@ -201,9 +241,6 @@ nav a:hover {
     text-align: left;
     margin-left: -1rem;
     font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
   }
 }
 </style>

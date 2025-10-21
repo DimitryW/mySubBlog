@@ -108,7 +108,7 @@ function timeAgo(dateString) {
         <h2>{{ post.title }}</h2>
         <p>{{ timeAgo(post.created_at) }}</p>
           <div class="tag-wrapper">
-          <p class="tag" v-for="tag in post.tags" :key="tag">{{ tag }}</p>
+          <p class="tag" v-for="tag in post.tags" :key="tag">#{{ tag }}</p>
         </div>
         <br/>
         <p v-html="post.short_body"></p>
@@ -126,9 +126,10 @@ function timeAgo(dateString) {
 
 <style scoped>
 h1 {
-  color: var(--color-text-1);
+  color: var(--color-text-2);
   height: 100px;
   width: 80%;
+  font-weight: 600;
   margin: 0 auto;
   line-height: 100px;
 }

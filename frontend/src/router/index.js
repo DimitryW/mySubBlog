@@ -4,7 +4,9 @@ import AboutView from '@/views/AboutView.vue'
 import PostDetail from '@/views/PostDetail.vue'
 import SubscriptionView from '@/views/SubscriptionView.vue'
 import SubscriptionSuccess from '@/views/SubscriptionSuccess.vue'
-import TopicView from '@/views/TopicView.vue'
+import CategoriesView from '@/views/Categories.vue'
+import CategoriesPostsView from '@/views/CategoriesPostsView.vue'
+import TagPostsView from '@/views/TagPostsView.vue'
 
 
 const router = createRouter({
@@ -15,7 +17,9 @@ const router = createRouter({
     {path: '/posts/:id', name: 'post-detail', component: PostDetail},
     {path: '/subscription', name: 'subscription', component: SubscriptionView},
     {path: '/subscription-success', name: 'subscription-success', component: SubscriptionSuccess},
-    {path: '/topics', name: 'topics', component: TopicView},
+    {path: '/categories', name: 'categories', component: CategoriesView},
+    {path: '/categories/:slug', name: 'CategoryPosts', component: CategoriesPostsView},
+    {path: '/tags/:tag', name: 'TagPosts', component: TagPostsView}
   ],
 })
 

@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register("posts", PostViewSet)
-router.register("topics", CategoryViewSet, basename="category")
+router.register("categories", CategoryViewSet, basename="category")
 
 urlpatterns = [
     path("", include(router.urls)),  # /api/blog/posts/

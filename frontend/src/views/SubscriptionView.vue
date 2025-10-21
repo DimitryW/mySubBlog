@@ -197,7 +197,7 @@ async function handleSwitchPlan(newPriceId) {
       <!-- Pricing Grid -->
       <div class="pricing-grid">
         <!-- Tier 1 -->
-        <div class="plan-card" :class="{ selected: selectedPriceId === tier1PriceId }" @click="selectedPriceId = tier1PriceId">
+        <div class="plan-card" :class="{ selected: selectedPriceId && selectedPriceId === tier1PriceId }" @click="selectedPriceId = tier1PriceId">
           <h3 class="tier">Tier 1<p class="current-plan" v-if="currentPriceId === tier1PriceId">current</p></h3>
           <div class="price">
             <span class="amount">
@@ -226,7 +226,7 @@ async function handleSwitchPlan(newPriceId) {
         </div>
 
         <!-- Tier 2 -->
-        <div class="plan-card popular" :class="{ selected: selectedPriceId === tier2PriceId }" @click="selectedPriceId = tier2PriceId">
+        <div class="plan-card popular" :class="{ selected: selectedPriceId && selectedPriceId === tier2PriceId }" @click="selectedPriceId = tier2PriceId">
           <!-- <div class="badge">Popular</div> -->
           <h3 class="tier">Tier 2<p class="current-plan" v-if="currentPriceId === tier2PriceId">current</p></h3>
           <div class="price">
@@ -264,7 +264,12 @@ async function handleSwitchPlan(newPriceId) {
               <span class="spinner"></span> Switching...
             </template>
             <template v-else>
+              <div v-if="!subscription.name">
+              Get Started
+              </div>
+              <div v-else>
               Switch Plan
+              </div>
             </template>
           </button>
         </div>
@@ -296,9 +301,9 @@ async function handleSwitchPlan(newPriceId) {
 }
 
 .title {
-  color: var(--color-text-1);
+  color: var(--color-text-2);
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 1.5rem;
 }
 
@@ -349,7 +354,7 @@ hr {
   margin: 1rem 0 2.5rem;
   width: 320px;
   position: relative;
-  background: var(--color-background-strong);
+  background: var(--color-background-soft);
   color: var(--color-text-3);
   cursor: pointer;
 }
@@ -388,6 +393,10 @@ hr {
 
 .switch-btn-wrapper {
   height: 3rem;
+}
+
+.switch-btn-wrapper button div {
+  font-weight: 600;
 }
 
 button {
