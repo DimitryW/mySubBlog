@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
+from django.db.models import Count
 
 
 def home(request):
@@ -25,7 +26,7 @@ class TagsPostPagination(PageNumberPagination):
 
 
 class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Category.objects.all().order_by("name")
+    queryset = Category.objects.annotate(posts_count=Count("posts")).order_by("name")
     serializer_class = CategorySerializer
     pagination_class = None
     lookup_field = "slug"
@@ -45,10 +46,6 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
     def get_permissions(self):
-        """
-        列表公開，但 retrieve 文章內容需要登入
-        """
-
         if self.action == "list":
             return [AllowAny()]
         else:  # retrieve, create, update, delete

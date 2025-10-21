@@ -4,9 +4,11 @@ from .models import Post, Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    posts_count = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Category
-        fields = ["id", "name", "slug"]
+        fields = ["id", "name", "slug", "posts_count"]
 
 
 class PostSerializer(serializers.ModelSerializer):

@@ -7,7 +7,6 @@ const categories = ref([])
 onMounted(async () => {
     try {
         const res = await getCategories()
-        console.log(res);
         if (res && res.length > 0) {
         categories.value = res
         }
@@ -25,7 +24,7 @@ onMounted(async () => {
     <div v-if="categories.length > 0">
         <div class="category-list">
         <RouterLink v-for="t in categories" :key="t.id" :to="`/categories/${t.slug}`" class="category">
-        {{ t.name }}
+        {{ t.name }}({{t.posts_count}})
         </RouterLink>
         </div>
     </div>
