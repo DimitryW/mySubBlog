@@ -107,6 +107,7 @@ function timeAgo(dateString) {
       <RouterLink :to="`/posts/${post.id}`">
         <h2>{{ post.title }}</h2>
         <p>{{ timeAgo(post.created_at) }}</p>
+        <hr/>
           <div class="tag-wrapper">
           <p class="tag" v-for="tag in post.tags" :key="tag">#{{ tag }}</p>
         </div>
@@ -136,8 +137,15 @@ h1 {
 
 h2 {
   color: var(--color-text-1);
-  font-size: 26px;
+  font-size: 2rem;
+  font-weight: 600;
 }
+
+hr {
+  border: 0; 
+  border-top: 1px solid var(--color-background-highlight-3); 
+  margin: 0.5rem 0;
+  }
 
 /* 讓 ul 的內容置中排列 */
 .post-list {
@@ -160,6 +168,7 @@ h2 {
   color: var(--color-text-2);
   text-align: left;           /* 卡片內容靠左對齊 */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  word-wrap: break-word; 
 }
 
 /* hover 效果 */

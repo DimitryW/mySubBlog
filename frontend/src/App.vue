@@ -8,11 +8,16 @@ import { isLoggedIn, username, login, logout, fetchUser } from '@/api/accountUse
 const userStore = useUserStore()
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 const isDark = ref(false)
+const isMenuOpen = ref(false)
 
 function toggleTheme() {
   isDark.value = !isDark.value
   document.documentElement.classList.toggle('dark', isDark.value)
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
+}
+
+function toggleMenu() { // 漢堡選單切換
+  isMenuOpen.value = !isMenuOpen.value
 }
 
 async function loadUser() {
@@ -37,8 +42,8 @@ onMounted(() => {
 <template>
   <header>
     <div class="wrapper">
-      <nav>
-       <!-- 🧭 上方區塊：深色切換 + 登入按鈕 -->
+       <!-- 上方區塊：深色切換 + 登入按鈕 -->
+       <div class="nav-top-wrapper">
         <div class="nav-top">
           <div class="theme-switch" @click="toggleTheme">
             <div class="switch-icon">
@@ -56,7 +61,16 @@ onMounted(() => {
             <a @click="login"><LogIn class="icon" />Login</a>
           </div>
         </div>
+        </div>
 
+        <!-- 漢堡按鈕 -->
+        <button class="hamburger" @click="toggleMenu">
+          <span :class="{ open: isMenuOpen }"></span>
+          <span :class="{ open: isMenuOpen }"></span>
+          <span :class="{ open: isMenuOpen }"></span>
+        </button>
+
+      <nav :class="{ open: isMenuOpen }">
         <RouterLink to="/">
           <Home class="icon" /> Home
         </RouterLink>
@@ -90,7 +104,14 @@ header {
   line-height: 1.5;
   background: var(--color-background-soft);
   padding: 10px 40px;
+  border-right: 1px solid var(--color-background-highlight-2);
 }
+
+header .wrapper {
+    display: flex;
+    place-items: flex-start;
+    flex-wrap: wrap;
+  }
 
 .logo {
   display: block;
@@ -108,15 +129,9 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between; /* 左右排列 */
-  margin: 0.5rem 1rem 1rem 24px;
+  margin: 0.5rem 0 1.5rem;
   font-weight: 600;
   font-size: 0.8rem;
-}
-
-.nav-top * {
-  font-size: inherit !important; 
-  font-weight: inherit !important; 
-  margin: 0 !important;
 }
 
 nav a  {
@@ -139,7 +154,7 @@ nav a {
   align-items: center; 
   gap: 0.5rem; 
   padding: 1rem;
-  margin: 1rem 0.5rem;
+  margin: 0.5rem 0;
   height: 50px;
   font-size: 14px;
 }
@@ -214,14 +229,6 @@ nav a:hover {
 
 
 @media (min-width: 1024px) {
-  header {
-    display: block;
-    padding-left: calc(var(--section-gap) / 8);
-    border-right: 1px solid var(--color-background-highlight-2);
-    padding-bottom: 2rem;
-    /* max-width: 245px; */
-}
-
   nav a .icon {
   width: 18px;   /* 控制 icon 大小 */
   height: 18px;
@@ -231,16 +238,96 @@ nav a:hover {
     margin: 0 2rem 0 0;
   }
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+  .nav-top-wrapper {
+    width: 100%
   }
 
   nav {
     text-align: left;
-    margin-left: -1rem;
     font-size: 1rem;
+  }
+}
+
+/* 漢堡選單樣式 */
+.hamburger {
+  display: none; /* 預設大螢幕隱藏 */
+  flex-direction: column;
+  gap: 4px;
+  width: 25px;
+  height: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.hamburger span {
+  display: block;
+  height: 3px;
+  background: var(--color-text-2);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.hamburger span.open:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+.hamburger span.open:nth-child(2) {
+  opacity: 0;
+}
+.hamburger span.open:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* 手機下拉 nav */
+nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: max-height 0.3s ease-in-out;
+}
+
+nav.open {
+  max-height: 500px; /* 足夠內容高度 */
+}
+
+@media (max-width: 1023px) {
+  header {
+    border-bottom: 1px solid var(--color-background-highlight-2);
+  }
+  
+  header .wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  nav {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .nav-top {
+    justify-content: left;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .hamburger {
+    margin-top: 6px;
+    display: flex;
+  }
+
+  .nav-top-wrapper {
+    width: auto;
+  }
+
+  nav a {
+    padding: 0.8rem 1rem;
+    background: var(--color-background-soft);
+    border-radius: 8px;
+    margin: 0.3rem 0;
   }
 }
 </style>

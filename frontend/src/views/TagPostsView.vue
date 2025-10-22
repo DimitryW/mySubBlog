@@ -76,6 +76,7 @@ function timeAgo(dateString) {
             <RouterLink :to="`/posts/${post.id}`">
               <h2>{{ post.title }}</h2>
               <p>{{ timeAgo(post.created_at) }}</p>
+              <hr/>
               <div class="tag-wrapper">
                 <p class="tag" v-for="tag in post.tags" :key="tag">#{{ tag }}</p>
               </div>
@@ -115,8 +116,21 @@ h1 {
   line-height: 100px;
 }
 
+h2 {
+  color: var(--color-text-1);
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+hr {
+  border: 0; 
+  border-top: 1px solid var(--color-background-highlight-3); 
+  margin: 0.5rem 0;
+  }
+
 .category-name {
   color: var(--color-text-1);
+  font-weight: 600;
 }
 
 .back-link { 
@@ -151,6 +165,7 @@ h1 {
   color: var(--color-text-2);
   text-align: left;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  word-wrap: break-word; 
 }
 .post-card:hover {
   transform: translateY(-3px);
