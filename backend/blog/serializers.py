@@ -1,6 +1,6 @@
 # blog/serializers.py
 from rest_framework import serializers
-from .models import Post, Category
+from .models import Post, Category, Comment
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -11,10 +11,19 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "slug", "posts_count"]
 
 
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField(read_only=True)  # 顯示 username
+
+    class Meta:
+        model = Comment
+        fields = ["id", "user", "content", "created_at"]
+
+
 class PostSerializer(serializers.ModelSerializer):
     image = serializers.ImageField(use_url=True)
     category = CategorySerializer()
     tags = serializers.SlugRelatedField(many=True, slug_field="name", read_only=True)
+    comments_count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Post
@@ -28,4 +37,5 @@ class PostSerializer(serializers.ModelSerializer):
             "short_body",
             "category",
             "tags",
+            "comments_count",
         ]

@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
-import { Sun, Moon, LogIn, LogOut, Home, Info, CreditCard, User, BookMarked } from 'lucide-vue-next'
+import { Sun, Moon, LogIn, LogOut, Home, Info, CreditCard, User, BookMarked, LayoutList, MessageCircle } from 'lucide-vue-next'
 import { isLoggedIn, username, login, logout, fetchUser } from '@/api/accountUsers.js'
 
 const userStore = useUserStore()
@@ -76,7 +76,7 @@ onMounted(() => {
         </RouterLink>
 
         <RouterLink to="/categories">
-          <BookMarked class="icon" /> Categories
+          <LayoutList class="icon" /> Categories
         </RouterLink>
 
         <RouterLink v-if="isLoggedIn" to="/subscription">

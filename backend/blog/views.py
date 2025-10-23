@@ -1,8 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post, Category
-from rest_framework import viewsets
-from .serializers import PostSerializer, CategorySerializer
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from .models import Post, Category, Comment
+from rest_framework import viewsets, generics
+from .serializers import PostSerializer, CategorySerializer, CommentSerializer
+from rest_framework.permissions import (
+    IsAuthenticated,
+    AllowAny,
+    IsAuthenticatedOrReadOnly,
+)
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -34,15 +38,39 @@ class CategoryViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=["get"])
     def posts(self, request, slug=None):
         category = self.get_object()
-        posts = Post.objects.filter(category=category).order_by("-created_at")
+        posts = (
+            Post.objects.filter(category=category)
+            .annotate(comments_count=Count("comments"))
+            .order_by("-created_at")
+        )
         paginator = CategoryPagination()
         page = paginator.paginate_queryset(posts, request)
         serializer = PostSerializer(page, many=True)
         return paginator.get_paginated_response(serializer.data)
 
 
+class CommentViewSet(generics.ListCreateAPIView):
+    serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        post_id = self.kwargs["post_id"]
+        return Comment.objects.filter(post_id=post_id).order_by("-created_at")
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, post_id=self.kwargs["post_id"])
+
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [IsAuthenticated()]
+        return [AllowAny()]
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
 class PostViewSet(viewsets.ModelViewSet):
-    queryset = Post.objects.all().order_by("-created_at")
+    queryset = Post.objects.annotate(comments_count=Count("comments")).order_by(
+        "-created_at"
+    )
     serializer_class = PostSerializer
 
     def get_permissions(self):
@@ -53,7 +81,11 @@ class PostViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="tag/(?P<tag>[^/.]+)")
     def by_tag(self, request, tag=None):
-        posts = Post.objects.filter(tags__name=tag).order_by("-created_at")
+        posts = (
+            Post.objects.filter(tags__name=tag)
+            .annotate(comments_count=Count("comments"))
+            .order_by("-created_at")
+        )
         paginator = TagsPostPagination()
         page = paginator.paginate_queryset(posts, request)
         serializer = self.get_serializer(page, many=True)

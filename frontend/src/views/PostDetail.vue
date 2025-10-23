@@ -2,6 +2,8 @@
 import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchPost } from '@/api/postService'
+import { fetchComments, addComment } from '@/api/commentService'
+import { MessageCircle } from 'lucide-vue-next'
 import Prism from 'prismjs'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL
@@ -10,6 +12,8 @@ const router = useRouter()
 const post = ref(null)
 const notLoggedIn = ref(false)
 const contentRef = ref(null)
+const comments = ref([])
+const newComment = ref('')
 
 onMounted(async () => {
   try {
@@ -20,6 +24,7 @@ onMounted(async () => {
     if (contentRef.value) {
       Prism.highlightAllUnder(contentRef.value)
     }
+    await loadComments()
   } catch (err) {
     if (err.response && [401, 403].includes(err.response.status)) {
       notLoggedIn.value = true
@@ -28,6 +33,19 @@ onMounted(async () => {
     }
   }
 })
+
+async function loadComments() {
+  const res = await fetchComments(route.params.id)
+  console.log("comment: ", res)
+  comments.value = res.data.results
+}
+
+async function submitComment() {
+  if (!newComment.value.trim()) return
+  await addComment(route.params.id, newComment.value)
+  newComment.value = ''
+  await loadComments() // 重新載入留言
+}
 
 // 若 post.body 會改變（例如重新載入），再監聽一次
 watch(post, async () => {
@@ -48,6 +66,16 @@ function toDateTimeStr(dateString) {
   });
   return `${dateStr} ${timeStr}`;
 }
+
+const commentSectionRef = ref(null)
+
+function scrollToComments() {
+  nextTick(() => {
+    if (commentSectionRef.value) {
+      commentSectionRef.value.scrollIntoView({ behavior: "smooth" })
+    }
+  })
+}
 </script>
 
 <template>
@@ -55,7 +83,13 @@ function toDateTimeStr(dateString) {
   <a @click.prevent="router.back()" class="back-link">← 返回</a>
   <div v-if="post">
     <div class="post">
-      <h1>{{ post.title }}</h1>
+      <div class="title">
+        <h1>{{ post.title }}</h1>
+        <div class="post-icon" @click="scrollToComments">
+          <MessageCircle class="icon"/>
+          <p>{{ post.comments_count }}</p>
+        </div>
+      </div>
       <p class="post-time">{{ toDateTimeStr(post.created_at) }}</p>
       <hr/>
       <div class="tag-wrapper">
@@ -67,6 +101,35 @@ function toDateTimeStr(dateString) {
       <div class="post-body" v-html="post.body" ref="contentRef"></div>
       <img v-if="post.image" :src="post.image" alt="post image" style="max-width: 300px">
     </div>
+
+  <div ref="commentSectionRef">
+    <div v-for="c in comments" :key="c.id" class="comments-section">
+      <div>
+        <div class="comment-user">{{ c.user }}留言</div>
+        <div class="comment-time">{{ toDateTimeStr(c.created_at) }}</div>
+      </div>
+      <div>
+        {{ c.content }}
+      </div>
+    </div>
+
+    <div>
+      <div v-if="!notLoggedIn" class="comment-form">
+        <textarea
+          id="comment-content"
+          name="comment"
+          v-model="newComment"
+          placeholder="寫下你的留言..."
+        ></textarea>
+        <button :disabled="!newComment.trim()" @click="submitComment">送出</button>
+      </div>
+      <div v-else>
+        <p>登入後即可留言。</p>
+      </div>
+    </div>
+  </div>
+
+
   </div>
   <div v-else-if="notLoggedIn">
     <p>你尚未登入，請先登入查看文章</p>
@@ -80,6 +143,25 @@ h1 {
   color: var(--color-text-1);
   font-size: 2rem;
   font-weight: 600;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-text-2);
+  cursor: pointer;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
 }
 
 hr {
@@ -128,6 +210,74 @@ hr {
   overflow: auto;
 }
 
+.comments-section {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  width: 80%;
+  margin: 2rem auto;
+  color: var(--color-text-1);
+  box-shadow: 0 10px 10px 5px rgba(0, 0, 0, 0.1);
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  background: var(--color-background-strong);
+}
+
+
+.comments-section div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.comment-user {
+  font-size: 1.5rem;
+  color: var(--color-text-1);
+}
+
+.comment-time {
+  font-size: 1rem;
+  color: var(--color-text-2);
+}
+
+.comment-form {
+  display: grid;
+  grid-template-columns: 10fr 2fr;
+  gap: 1rem;
+  width: 80%;
+  margin: 2rem auto;
+  color: var(--color-text-1);
+  box-shadow: 0 10px 10px 5px rgba(0, 0, 0, 0.1);
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  background: var(--color-background-strong);
+}
+
+.comment-form textarea {
+  width: 100%;
+  height: 60px;
+  border: 1px solid var(--color-background-highlight-2);
+  border-radius: 8px;
+  padding: 1rem;
+  color: var(--color-text-1);
+  background: var(--color-background);
+}
+
+.comment-form textarea:focus {
+  border: 2px solid var(--color-background-highlight-1);    
+  outline: none;  
+}
+
+.comment-form button {
+  height: 30px;
+  border: none;
+  background: var(--color-background-highlight-1);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
 /* Prism.js 語法區塊 */
 .post-body pre {
   background: #2d2d2d;
@@ -142,7 +292,7 @@ hr {
 }
 
 @media (max-width: 1023px) {
-  .post {
+  .post, .comments-section, .comment-form {
     width: 100%;
     border-radius: 0;
   }

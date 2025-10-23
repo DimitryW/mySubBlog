@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { MessageCircle } from 'lucide-vue-next'
 import { getCategoriesPosts } from '@/api/category'
 
 const route = useRoute()
@@ -67,7 +68,13 @@ function timeAgo(dateString) {
     <ul class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-card">
         <RouterLink :to="`/posts/${post.id}`">
-          <h2>{{ post.title }}</h2>
+          <div class="title">
+            <h2>{{ post.title }}</h2>
+            <div class="post-icon" @click="scrollToComments">
+              <MessageCircle class="icon"/>
+              <p>{{ post.comments_count }}</p>
+            </div>
+          </div>
           <p>{{ timeAgo(post.created_at) }}</p>
           <hr/>
           <div class="tag-wrapper">
@@ -95,6 +102,25 @@ h2 {
   color: var(--color-text-1);
   font-size: 2rem;
   font-weight: 600;
+}
+
+.title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.post-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--color-text-2);
+  cursor: pointer;
+}
+
+.icon {
+  width: 18px;
+  height: 18px;
 }
 
 hr {
