@@ -318,6 +318,7 @@ hr {
   padding: 1rem;
   color: var(--color-text-1);
   background: var(--color-background);
+  resize: vertical;
 }
 
 .comment-form textarea {
