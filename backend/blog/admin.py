@@ -6,8 +6,15 @@ from django.utils.html import strip_tags
 class CommentInline(admin.TabularInline):  # 也可以用 admin.StackedInline
     model = Comment
     extra = 1  # 顯示一個可新增的空白欄位
-    fields = ("user", "content", "created_at")
+    fields = ("user", "content", "parent", "created_at")
     readonly_fields = ("created_at",)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "parent" and hasattr(self, "parent_instance"):
+            kwargs["queryset"] = Comment.objects.filter(
+                post=self.parent_instance, parent__isnull=True
+            )
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
 # Register your models here.
@@ -35,6 +42,12 @@ class PostAdmin(admin.ModelAdmin):
 
     inlines = [CommentInline]
 
+    def get_formsets_with_inlines(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            if isinstance(inline, CommentInline):
+                inline.parent_instance = obj  # 把 Post 傳給 Inline
+            yield inline.get_formset(request, obj), inline
+
     # 自訂顯示 body 的縮略文字
     def short_body(self, obj):
         text = strip_tags(obj.body)
@@ -60,7 +73,7 @@ class CommentAdmin(admin.ModelAdmin):
         "created_at",
     )
     search_fields = ("post__title", "user__username", "content")
-    list_filter = ("user", "created_at")
+    list_filter = ("post", "user", "created_at")
 
     def short_content(self, obj):
         text = strip_tags(obj.content)
