@@ -13,10 +13,16 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(read_only=True)  # 顯示 username
+    replies = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ["id", "user", "content", "created_at"]
+        fields = ["id", "user", "content", "parent", "replies", "created_at"]
+
+    def get_replies(self, obj):
+        # 僅取直接回覆 (單層)
+        qs = obj.replies.all().order_by("created_at")
+        return CommentSerializer(qs, many=True).data
 
 
 class PostSerializer(serializers.ModelSerializer):

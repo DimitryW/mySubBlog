@@ -16,11 +16,11 @@ export function fetchComments(postId) {
 }
 
 // 新增留言
-export function addComment(postId, content) {
+export function addComment(postId, content, parentId = null) {
   const csrftoken = getCookie('csrftoken')
   return axios.post(
     `${API_BASE}/api/blog/posts/${postId}/comments/`,
-    { content },
+    { content: content, parent: parentId },
     {
       withCredentials: true,
       headers: { 'X-CSRFToken': csrftoken }

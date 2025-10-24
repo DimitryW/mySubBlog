@@ -3,7 +3,7 @@ import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchPost } from '@/api/postService'
 import { fetchComments, addComment } from '@/api/commentService'
-import { MessageCircle } from 'lucide-vue-next'
+import { MessageCircle, CornerDownRight } from 'lucide-vue-next'
 import Prism from 'prismjs'
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL
@@ -14,6 +14,7 @@ const notLoggedIn = ref(false)
 const contentRef = ref(null)
 const comments = ref([])
 const newComment = ref('')
+const replyContent = ref({})
 
 onMounted(async () => {
   try {
@@ -45,6 +46,13 @@ async function submitComment() {
   await addComment(route.params.id, newComment.value)
   newComment.value = ''
   await loadComments() // 重新載入留言
+}
+
+async function submitReply(parentId) {
+  if (!replyContent.value[parentId]?.trim()) return
+  await addComment(route.params.id, replyContent.value[parentId], parentId)
+  replyContent.value[parentId] = ''
+  await loadComments()
 }
 
 // 若 post.body 會改變（例如重新載入），再監聽一次
@@ -105,11 +113,27 @@ function scrollToComments() {
   <div ref="commentSectionRef">
     <div v-for="c in comments" :key="c.id" class="comments-section">
       <div>
-        <div class="comment-user">{{ c.user }}留言</div>
+        <div class="comment-user">{{ c.user }}留言：</div>
         <div class="comment-time">{{ toDateTimeStr(c.created_at) }}</div>
       </div>
       <div>
         {{ c.content }}
+      </div>
+      <div class="replies">
+        <div v-for="r in c.replies" :key="r.id">
+          <div class="reply-section">
+            <div>
+            <p class="reply-user"><CornerDownRight class="icon"/>{{ r.user }}回覆：</p>
+            <p class="reply-time">{{ toDateTimeStr(r.created_at) }}</p>
+            </div>
+            <div class="reply-content">{{ r.content }}</div>
+          </div>
+          
+        </div>
+      </div>
+      <div v-if="!notLoggedIn" class="reply-form">
+        <textarea v-model="replyContent[c.id]" placeholder="回覆..." />
+        <button @click="submitReply(c.id)">回覆</button>
       </div>
     </div>
 
@@ -252,9 +276,43 @@ hr {
   background: var(--color-background-strong);
 }
 
-.comment-form textarea {
+.reply-form {
+  display: grid !important;
+  grid-template-columns: 11fr 1fr;
+  gap: 1rem;
   width: 100%;
-  height: 60px;
+  margin: 1rem;
+  color: var(--color-text-1);
+  align-items: start !important;
+}
+
+.reply-section {
+  display: grid !important;
+  grid-template-columns: 1fr;
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--color-background-highlight-2);
+}
+
+.reply-user {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.reply-time {
+  color: var(--color-text-2);
+}
+
+.reply-content {
+  word-break: break-word;
+  white-space: normal;
+} 
+
+.comment-form textarea, .reply-form textarea {
+  width: 100%;
   border: 1px solid var(--color-background-highlight-2);
   border-radius: 8px;
   padding: 1rem;
@@ -262,12 +320,20 @@ hr {
   background: var(--color-background);
 }
 
+.comment-form textarea {
+  height: 200px;
+}
+
+.reply-form textarea {
+  height: 60px;
+}
+
 .comment-form textarea:focus {
   border: 2px solid var(--color-background-highlight-1);    
   outline: none;  
 }
 
-.comment-form button {
+.comment-form button, .reply-form button {
   height: 30px;
   border: none;
   background: var(--color-background-highlight-1);
@@ -276,6 +342,12 @@ hr {
   font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.replies, reply-form {
+  display: block !important;
+  padding-left: 1rem;
+  margin-top: 0.5rem;
 }
 
 /* Prism.js 語法區塊 */

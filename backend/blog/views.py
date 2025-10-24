@@ -54,7 +54,9 @@ class CommentViewSet(generics.ListCreateAPIView):
 
     def get_queryset(self):
         post_id = self.kwargs["post_id"]
-        return Comment.objects.filter(post_id=post_id).order_by("-created_at")
+        return Comment.objects.filter(post_id=post_id, parent=None).order_by(
+            "-created_at"
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user, post_id=self.kwargs["post_id"])
