@@ -241,7 +241,7 @@ hr {
 
 .comment-form {
   display: grid;
-  grid-template-columns: 10fr 2fr;
+  grid-template-columns: 11fr 1fr;
   gap: 1rem;
   width: 80%;
   margin: 2rem auto;

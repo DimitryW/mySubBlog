@@ -12,7 +12,7 @@ from taggit.managers import TaggableManager
 class Post(models.Model):
     title = models.CharField(max_length=200)
     author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    body = CKEditor5Field()
+    body = CKEditor5Field(config_name="extends")
     created_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to="posts/images/", blank=True, null=True)
     category = models.ForeignKey(

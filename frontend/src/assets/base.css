@@ -38,6 +38,7 @@
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
   --color-background-mute: var(--vt-c-white-mute);
+  --color-background-mute-2: var(--vt-c-white-mute);
   --color-background-strong: var(--vt-c-white-strong);
   --color-background-highlight-1: var(--vt-c-white-highlight-1);
   --color-background-highlight-2: var(--vt-c-white-highlight-2);
@@ -61,6 +62,7 @@ html.dark {
     --color-background: var(--vt-c-black);
     --color-background-soft: var(--vt-c-black-soft);
     --color-background-mute: var(--vt-c-black-mute);
+    --color-background-mute-2: var(--vt-c-black-highlight-1);
     --color-background-strong: var(--vt-c-black-strong);
     --color-background-highlight-1: var(--vt-c-black-highlight-1);
     --color-background-highlight-2: var(--vt-c-black-highlight-2);

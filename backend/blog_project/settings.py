@@ -313,6 +313,7 @@ CKEDITOR_5_CONFIGS = {
         },
         "table": {
             "contentToolbar": [
+                "insertTable",
                 "tableColumn",
                 "tableRow",
                 "mergeTableCells",
@@ -322,10 +323,22 @@ CKEDITOR_5_CONFIGS = {
             "tableProperties": {
                 "borderColors": customColorPalette,
                 "backgroundColors": customColorPalette,
+                "defaultProperties": {
+                    "alignment": "center",
+                    "width": "80%",
+                    "borderStyle": "solid",
+                    "borderColor": "hsl(0, 0%, 70%)",
+                    "borderWidth": "1px",
+                },
             },
             "tableCellProperties": {
                 "borderColors": customColorPalette,
                 "backgroundColors": customColorPalette,
+                "defaultProperties": {
+                    "horizontalAlignment": "center",
+                    "verticalAlignment": "middle",
+                    "padding": "8px",
+                },
             },
         },
         "heading": {

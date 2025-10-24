@@ -53,3 +53,20 @@ a {
   background: var(--color-background-highlight-3);
   color: var(--color-text-3);
 }
+
+/* 文章中的表格 */
+.post-body figure.table table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 1.5em 0 !important;
+  border: 1px solid #ddd !important;
+}
+
+.post-body figure.table th,
+.post-body figure.table td {
+  border: 1px solid #ddd !important;
+  padding: 8px !important;
+  background-color: var(--color-background-mute-2) !important;
+  color: var(--color-text-3);
+}
+
