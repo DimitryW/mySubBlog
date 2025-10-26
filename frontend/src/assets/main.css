@@ -87,9 +87,9 @@ h2 {
 
 code {
     font-family: monospace;
-    color: #f8f8f2;       /* 淺色文字 */
+    color: #ff4e98;       /* 淺色文字 */
     background-color: #1E1E1E; /* 深灰背景 */
-    padding: 1px 2px;
+    padding: 2px 4px;
     border-radius: 4px;
 }
 
