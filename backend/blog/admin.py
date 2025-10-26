@@ -29,6 +29,7 @@ class PostAdmin(admin.ModelAdmin):
         "created_at",
         "image",
         "category",
+        "is_locked",
     )
 
     # 可以搜尋的欄位

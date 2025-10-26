@@ -23,6 +23,7 @@ class Post(models.Model):
         related_name="posts",
     )
     tags = TaggableManager(blank=True)
+    is_locked = models.BooleanField(default=False, help_text="是否僅限訂閱者閱讀")
 
     def __str__(self):
         return self.title
@@ -41,7 +42,7 @@ class Post(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=120, unique=True, blank=True)
+    slug = models.SlugField(max_length=120, unique=True, blank=True, allow_unicode=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:

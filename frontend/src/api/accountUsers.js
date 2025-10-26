@@ -4,6 +4,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 export const isLoggedIn = ref(false)
 export const username = ref('')
+export const is_subscribed = ref(false)
 
 // 取得登入狀態
 export async function fetchUser() {
@@ -12,6 +13,7 @@ export async function fetchUser() {
     const data = await res.json()
     isLoggedIn.value = !!data.username
     username.value = data.username || ''
+    is_subscribed.value = data.is_subscribed || false
     console.log('User fetched:', data)
     return data
   } catch (err) {

@@ -44,4 +44,5 @@ class PostSerializer(serializers.ModelSerializer):
             "category",
             "tags",
             "comments_count",
+            "is_locked",
         ]

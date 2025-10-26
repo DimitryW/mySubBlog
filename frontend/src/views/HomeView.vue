@@ -1,7 +1,8 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import { MessageCircle } from 'lucide-vue-next'
+import { MessageCircle, LockKeyhole, LockKeyholeOpen } from 'lucide-vue-next'
 import { fetchPosts } from '../api/postService.js'
+import { is_subscribed } from '@/api/accountUsers.js'
 
 const posts = ref([])
 const currentPage = ref(1)
@@ -108,11 +109,22 @@ function timeAgo(dateString) {
       <RouterLink :to="`/posts/${post.id}`">
         <div class="title">
           <h2>{{ post.title }}</h2>
+          <div v-if="post.is_locked">
+            <div v-if="!is_subscribed" class="corner-lock-ribbon">
+              <LockKeyhole class="icon-lock" />
+              <span>僅限訂閱會員閱讀</span>
+            </div>
+            <div v-if="is_subscribed" class="corner-unlock-ribbon">
+              <LockKeyholeOpen class="icon-lock" />
+              <span>訂閱會員限定</span>
+            </div>
+          </div>
           <div class="post-icon" @click="scrollToComments">
             <MessageCircle class="icon"/>
             <p>{{ post.comments_count }}</p>
           </div>
         </div>
+        
         <p>{{ timeAgo(post.created_at) }}</p>
         <hr/>
           <div class="tag-wrapper">
@@ -152,6 +164,38 @@ h2 {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.corner-lock-ribbon {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  background: rgba(255, 0, 0, 0.1);
+  color: #d00;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 0;
+  padding: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.corner-unlock-ribbon {
+  display: flex;
+  gap: 0.3rem;
+  align-items: center;
+  background: rgb(10 173 0 / 14%);
+  color: #1a9000;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  position: absolute;
+  top: 10px;
+  right: 0;
+  padding: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .post-icon {
@@ -195,6 +239,7 @@ hr {
   text-align: left;           /* 卡片內容靠左對齊 */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   word-wrap: break-word; 
+  position: relative;
 }
 
 /* hover 效果 */

@@ -80,7 +80,7 @@ onMounted(() => {
         </RouterLink>
 
         <RouterLink v-if="isLoggedIn" to="/subscription">
-          <CreditCard class="icon" /> My Subscription
+          <CreditCard class="icon" /> Subscription
         </RouterLink>
 
         <!--

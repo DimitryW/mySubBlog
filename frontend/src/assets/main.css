@@ -85,6 +85,19 @@ h2 {
     unicode-bidi: isolate;
 }
 
+/* Prism.js 語法區塊 */
+pre {
+  background: #1E1E1E;
+  color: #ccc;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto; /* 保留水平滾動條 */
+  font-family: "Fira Code", monospace;
+  white-space: pre-wrap;   /* 允許換行 */
+  word-wrap: break-word;   /* 強制長單詞換行 */
+  width: 100%;
+}
+
 code {
     font-family: monospace;
     color: #ff4e98;       /* 淺色文字 */
