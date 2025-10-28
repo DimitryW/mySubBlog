@@ -26,6 +26,10 @@ onMounted(async () => {
     locked.value = post.value.is_locked && !is_subscribed.value
     console.log(post.value, locked.value)
     await loadComments()
+    await nextTick()
+    if (contentRef.value) {
+      Prism.highlightAllUnder(contentRef.value)
+    }
   } catch (err) {
     if (err.response && [401, 403].includes(err.response.status)) {
       notLoggedIn.value = true
@@ -55,7 +59,6 @@ async function submitReply(parentId) {
   await loadComments()
 }
 
-// 若 post.body 會改變（例如重新載入），再監聽一次
 watch(post, async () => {
   await nextTick()
   if (contentRef.value) {
@@ -130,7 +133,7 @@ function scrollToComments() {
           </RouterLink>
         </div>
         <br />
-        <div class="post-body" v-html="post.body" ref="contentRef"></div>
+        <div class="post-body" v-html="post.body" v-prism ref="contentRef"></div>
         <img
           v-if="post.image"
           :src="post.image"

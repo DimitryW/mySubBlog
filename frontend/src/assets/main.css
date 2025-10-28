@@ -98,11 +98,19 @@ pre {
   width: 100%;
 }
 
+pre code,
+pre code span {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+}
+
 code {
     font-family: monospace;
     color: #ff5aa0;       /* 淺色文字 */
     background-color: #1E1E1E; /* 深灰背景 */
     padding: 2px 4px;
     border-radius: 4px;
+    white-space: pre-wrap;   /* 允許換行 */
+    word-wrap: break-word;   /* 強制長單詞換行 */
 }
 
