@@ -11,7 +11,7 @@ const subscription = ref({});
 const currentPriceId = ref('');
 const userStore = useUserStore();
 const selectedPriceId = ref(''); 
-let paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
+const paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
 
 const CONFIG = {
   clientToken: import.meta.env.VITE_PADDLE_TOKEN,
@@ -93,7 +93,7 @@ function updateBillingCycle(cycle) {
   updatePrices();
 }
 
-function openCheckout(plan) {
+function openCheckout(price) {
   console.log('paddleCustomerId: ', paddleCustomerId.value)
   if (!paddleReady || !paddleCustomerId.value) return
   let theme = localStorage.getItem('theme');
@@ -102,7 +102,7 @@ function openCheckout(plan) {
     theme = isDark ? "dark" : "light";
   }
   Paddle.Checkout.open({
-    items: [{ priceId: CONFIG.prices[plan][billingCycle.value], quantity: 1 }],
+    items: [{ priceId: price, quantity: 1 }],
     customer: { id: paddleCustomerId.value },
     settings: {
       allowedPaymentMethods: ["card"],
@@ -259,17 +259,16 @@ async function handleSwitchPlan(newPriceId) {
 
       <div class="switch-btn-wrapper">
         <div v-if="selectedPriceId && currentPriceId !== selectedPriceId">
-          <button :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
+          <button v-if="!subscription.name" @click="openCheckout(selectedPriceId)">
+              Get Started
+          </button>
+
+          <button v-else :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
             <template v-if="isSwitching">
               <span class="spinner"></span> Switching...
             </template>
             <template v-else>
-              <div v-if="!subscription.name">
-              Get Started
-              </div>
-              <div v-else>
               Switch Plan
-              </div>
             </template>
           </button>
         </div>
@@ -389,6 +388,7 @@ hr {
 .productDesc {
   margin: 1rem;
   color: var(--color-text-1);
+  white-space: pre-wrap;
 }
 
 .switch-btn-wrapper {

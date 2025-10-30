@@ -1,7 +1,7 @@
 from django.apps import AppConfig
 import logging
 
-logging = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class PaddleSyncConfig(AppConfig):
@@ -18,9 +18,9 @@ class PaddleSyncConfig(AppConfig):
                 and self.occurred_at is not None
                 and occurred_at <= self.occurred_at
             ):
-                logging.warning("ignoring duplicate webhook event")
+                logger.warning("ignoring duplicate webhook event")
                 return False
-            logging.info("processing webhook event")
+            logger.info("processing webhook event")
             return True
 
         PaddleBaseModel.validate_occurred_at = patched_validate_occurred_at

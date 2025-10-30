@@ -12,6 +12,7 @@ def user_info(request):
     if request.user.is_authenticated:
         user = User.objects.select_related("paddle_user").get(pk=request.user.pk)
         serializer = UserSerializer(user)
+        print("Serialized user info: ", serializer.data)
         return Response(serializer.data)
     return Response({})  # 未登入回傳空物件
 

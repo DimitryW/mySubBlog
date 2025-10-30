@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django_paddle_billing.models import Subscription
+from django_paddle_billing.models import Subscription, Transaction, Customer
 import requests
 from django.conf import settings
 
@@ -74,7 +74,58 @@ def change_subscription(request):
         "proration_billing_mode": proration_billing_mode,
         "items": [{"price_id": new_price_id, "quantity": 1}],
     }
-    print("PATCH", api_url, payload)
     resp = requests.patch(api_url, json=payload, headers=headers)
-    print(resp.status_code, resp.text)
     return Response(resp.json())
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_transactions(request):
+    user = request.user
+    customer = Customer.objects.filter(user=user).first()
+    if not customer:
+        return Response([])
+
+    transactions = customer.transactions.all().order_by("-created_at")
+
+    data = []
+    for tx in transactions:
+        # 付款金額
+        amount = 0
+        if tx.data:
+            try:
+                amount = int(tx.data["details"]["totals"]["total"]) / 100
+            except Exception:
+                pass
+        tx_type = "payment" if amount >= 0 else "refund/adjustment"
+
+        # 付款日期
+        date = ""
+        if tx.data:
+            try:
+                date = tx.data["payments"][0]["captured_at"]
+            except Exception:
+                pass
+
+        # 狀態
+        status = ""
+        if tx.data:
+            status = tx.data.get("status", "")
+
+        # 付款方式
+        method = ""
+        if tx.data.get("payments"):
+            method = f'{tx.data["payments"][0]["method_details"]["card"]["type"]} {tx.data["payments"][0]["method_details"]["card"]["last4"]}'
+
+        data.append(
+            {
+                "id": tx.id,
+                "date_paid": date,
+                "payment_amount": amount,
+                "status": status,
+                "type": tx_type,
+                "method": method,
+            }
+        )
+
+    return Response(data)

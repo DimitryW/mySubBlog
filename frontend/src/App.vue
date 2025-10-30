@@ -83,11 +83,9 @@ onMounted(() => {
           <CreditCard class="icon" /> Subscription
         </RouterLink>
 
-        <!--
         <RouterLink v-if="isLoggedIn" to="/account">
           <User class="icon" /> Account
         </RouterLink>
-        -->
 
         <RouterLink to="/about">
           <Info class="icon" /> About

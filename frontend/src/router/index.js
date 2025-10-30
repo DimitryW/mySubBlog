@@ -7,6 +7,7 @@ import SubscriptionSuccess from '@/views/SubscriptionSuccess.vue'
 import CategoriesView from '@/views/Categories.vue'
 import CategoriesPostsView from '@/views/CategoriesPostsView.vue'
 import TagPostsView from '@/views/TagPostsView.vue'
+import Account from '@/views/AccountView.vue'
 
 
 const router = createRouter({
@@ -19,7 +20,8 @@ const router = createRouter({
     {path: '/subscription-success', name: 'subscription-success', component: SubscriptionSuccess},
     {path: '/categories', name: 'categories', component: CategoriesView},
     {path: '/categories/:slug', name: 'CategoryPosts', component: CategoriesPostsView},
-    {path: '/tags/:tag', name: 'TagPosts', component: TagPostsView}
+    {path: '/tags/:tag', name: 'TagPosts', component: TagPostsView},
+    {path: '/account', name: 'account', component: Account}
   ],
 })
 

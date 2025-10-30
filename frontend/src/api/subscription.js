@@ -26,3 +26,11 @@ export async function changeSubscription(subscriptionId, newPriceId) {
   console.log("Response:", res);
   return res.data;
 }
+
+export async function fetchMyTransactions() {
+  const res = await axios.get(`${API_BASE}/api/paddle/my-transactions/`, {
+    withCredentials: true,
+  });
+  console.log("Response:", res);
+  return res.data; 
+}
