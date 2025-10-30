@@ -9,7 +9,7 @@ console.log(userStore)
     <h2>Personal Info</h2>
     <p><strong>Username:</strong> {{ userStore.user?.username }}</p>
     <p><strong>Email:</strong> {{ userStore.user?.email }}</p>
-    <p><strong>Subscription:</strong> {{ userStore.user?.subscription_info ? userStore.user.subscription_info.name : '' }}</p>
+    <p><strong>Subscription:</strong> {{ userStore.user?.subscription_info ? userStore.user.subscription_info.name : 'Not Subscribed' }}</p>
   </div>
 </template>
 
