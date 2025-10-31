@@ -327,7 +327,6 @@ hr {
   color: var(--color-text-3);
   padding: 0.5rem 1rem;
   margin: 0 0.5rem;
-  border: 1px solid #ccc;
   background: var(--color-background-soft);
   border: 1px solid var(--color-background-highlight-2);
   cursor: pointer;

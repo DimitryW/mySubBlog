@@ -2,12 +2,14 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django_paddle_billing.models import Subscription
+from allauth.socialaccount.models import SocialAccount
 
 
 class UserSerializer(serializers.ModelSerializer):
     paddle_customer_id = serializers.SerializerMethodField()
     is_subscribed = serializers.SerializerMethodField()
     subscription_info = serializers.SerializerMethodField()
+    is_social_login = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -18,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             "paddle_customer_id",
             "is_subscribed",
             "subscription_info",
+            "is_social_login",
         )
 
     def get_paddle_customer_id(self, obj):
@@ -39,3 +42,6 @@ class UserSerializer(serializers.ModelSerializer):
             }
         except Subscription.DoesNotExist:
             return None
+
+    def get_is_social_login(self, obj):
+        return SocialAccount.objects.filter(user=obj).exists()
