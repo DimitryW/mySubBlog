@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "accounts",
     "django_paddle_billing",
     "django_json_widget",
+    "nowpayment",
     # third-party app
     "paddle_sync.apps.PaddleSyncConfig",
     "taggit",

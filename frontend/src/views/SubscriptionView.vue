@@ -2,8 +2,8 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
-import { fetchMySubscription } from '@/api/subscription.js'
-import { changeSubscription } from '@/api/subscription.js'
+import { fetchMySubscription, changeSubscription, payWithCrypto } from '@/api/subscription.js'
+
 
 const router = useRouter() 
 const route = useRoute()
@@ -11,6 +11,7 @@ const subscription = ref({});
 const currentPriceId = ref('');
 const userStore = useUserStore();
 const selectedPriceId = ref(''); 
+const selectedTier = ref('tier1'); 
 const paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
 
 const CONFIG = {
@@ -24,6 +25,18 @@ const CONFIG = {
       month: "pri_01k78x6q4qqc678s54caav311c",
       year: "pri_01k78xpgh94fbvxn9w64rzsk1x"
     }
+  }
+};
+
+// NowPayments subscription IDs from .env
+const NOWPAYMENT_SUBS = {
+  tier1: { 
+    month: import.meta.env.VITE_NOWPAYMENT_SUB_TIER1_MONTH, 
+    year: import.meta.env.VITE_NOWPAYMENT_SUB_TIER1_YEAR 
+  },
+  tier2: { 
+    month: import.meta.env.VITE_NOWPAYMENT_SUB_TIER2_MONTH, 
+    year: import.meta.env.VITE_NOWPAYMENT_SUB_TIER2_YEAR 
   }
 };
 
@@ -155,6 +168,18 @@ async function handleSwitchPlan(newPriceId) {
     isSwitching.value = false;
   }
 }
+
+function selectTier(tier, priceId) {
+  selectedTier.value = tier;
+  selectedPriceId.value = priceId;
+}
+
+// NowPayments Crypto Payment
+function handleCryptoPay() {
+  const subId = NOWPAYMENT_SUBS[selectedTier.value][billingCycle.value];
+  if (!subId) return alert("No subscription ID for selected plan.");
+  payWithCrypto(subId);
+}
 </script>
 
 <template>
@@ -197,7 +222,7 @@ async function handleSwitchPlan(newPriceId) {
       <!-- Pricing Grid -->
       <div class="pricing-grid">
         <!-- Tier 1 -->
-        <div class="plan-card" :class="{ selected: selectedPriceId && selectedPriceId === tier1PriceId }" @click="selectedPriceId = tier1PriceId">
+        <div class="plan-card" :class="{ selected: selectedPriceId && selectedPriceId === tier1PriceId }" @click="selectTier('tier1', tier1PriceId)">
           <h3 class="tier">Tier 1<p class="current-plan" v-if="currentPriceId === tier1PriceId">current</p></h3>
           <div class="price">
             <span class="amount">
@@ -226,7 +251,7 @@ async function handleSwitchPlan(newPriceId) {
         </div>
 
         <!-- Tier 2 -->
-        <div class="plan-card popular" :class="{ selected: selectedPriceId && selectedPriceId === tier2PriceId }" @click="selectedPriceId = tier2PriceId">
+        <div class="plan-card popular" :class="{ selected: selectedPriceId && selectedPriceId === tier2PriceId }" @click="selectTier('tier2', tier2PriceId)">
           <!-- <div class="badge">Popular</div> -->
           <h3 class="tier">Tier 2<p class="current-plan" v-if="currentPriceId === tier2PriceId">current</p></h3>
           <div class="price">
@@ -260,7 +285,10 @@ async function handleSwitchPlan(newPriceId) {
       <div class="switch-btn-wrapper">
         <div v-if="selectedPriceId && currentPriceId !== selectedPriceId">
           <button v-if="!subscription.name" @click="openCheckout(selectedPriceId)">
-              Get Started
+              Pay with Credit Card
+          </button>
+          <button v-if="selectedPriceId && !subscription.name" @click="handleCryptoPay">
+            Pay with Crypto
           </button>
 
           <button v-else :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
@@ -400,6 +428,7 @@ hr {
 
 button {
   padding: 0.75rem 1.5rem;
+  margin: 0 0.5rem;
   border: none;
   background: var(--color-background-highlight-1);
   color: #fff;

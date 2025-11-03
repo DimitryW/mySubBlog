@@ -34,3 +34,38 @@ export async function fetchMyTransactions() {
   console.log("Response:", res);
   return res.data; 
 }
+
+export async function payWithCrypto(planId) {
+  try {
+    const res = await axios.post(`${API_BASE}/api/nowpayment/create-subscription/`, {
+      plan_id: planId,
+    }, {
+      withCredentials: true,
+      headers: {
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+    });
+
+    const data = await res.data;
+    console.log("NowPayments subscription response:", data);
+
+    if (data.result && data.result.length > 0) {
+      const sub = data.result[0];
+      if (sub.status === "WAITING_PAY") {
+        alert(
+          `Subscription created! Please pay for your plan.\nSubscriber: ${sub.subscriber.email}`
+        );
+        // 如果你有回傳支付 URL，這裡可以直接跳轉
+        // window.location.href = sub.payment_url;
+      } else if (sub.is_active) {
+        alert("Subscription is active!");
+      }
+    } else {
+      alert("Failed to create subscription.");
+    }
+  } catch (err) {
+    console.error("Failed to create subscription:", err);
+    alert("Error creating subscription.");
+  }
+}
+
