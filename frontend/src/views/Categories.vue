@@ -28,7 +28,7 @@ onMounted(async () => {
         </RouterLink>
         </div>
     </div>
-    <div v-else>
+    <div v-else class="category-list">
         尚無分類
     </div>
     </div>

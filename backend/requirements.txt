@@ -25,6 +25,7 @@ django-js-asset==3.1.2
 django-json-widget==2.0.3
 django-paddle-billing==0.1.14
 django-picklefield==3.3
+django-smart-selects==1.7.2
 django-taggit==6.1.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
@@ -37,6 +38,7 @@ pathspec==0.12.1
 pillow==11.3.0
 platformdirs==4.4.0
 prompt_toolkit==3.0.52
+psycopg2-binary==2.9.11
 pycparser==2.23
 pydantic==2.10.6
 pydantic_core==2.27.2
