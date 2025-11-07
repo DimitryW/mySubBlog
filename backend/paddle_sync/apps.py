@@ -24,3 +24,11 @@ class PaddleSyncConfig(AppConfig):
             return True
 
         PaddleBaseModel.validate_occurred_at = patched_validate_occurred_at
+
+        import sys
+
+        if "runserver" in sys.argv:
+            from .tasks import sync_products_task
+
+            logger.info("[Paddle Sync] Triggering sync_products_task at startup")
+            sync_products_task.delay()  # 非同步執行
