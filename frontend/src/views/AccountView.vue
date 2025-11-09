@@ -58,7 +58,7 @@ h1 {
 
 .avatar_img {
   border-radius: 50%;
-  border: 2px solid var(--color-background-highlight-2);
+  border: 2px solid var(--color-background-highlight-3);
   width: 5rem;
   height: 5rem;
   object-fit: cover;
