@@ -41,9 +41,16 @@ onMounted(() => {
 
 <template>
   <header>
+    <div class="logo-wrapper">
+      <RouterLink to="/">
+        <img class="logo-img" src="/site_logo.jpg" alt="Dimitry's Digest Logo"/>
+        <div class="title">Dimitry's Digest</div>
+      </RouterLink>
+    </div> 
+    <hr>
     <div class="wrapper">
-       <!-- 上方區塊：深色切換 + 登入按鈕 -->
        <div class="nav-top-wrapper">
+       <!-- 上方區塊：深色切換 + 登入按鈕 -->
         <div class="nav-top">
           <div class="theme-switch" @click="toggleTheme">
             <div class="switch-icon">
@@ -111,10 +118,31 @@ header .wrapper {
     flex-wrap: wrap;
   }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.logo-wrapper {
+  width: 100%;
+  text-align: center;
 }
+
+.logo-img {
+  border-radius: 50%;
+  border: 2px solid var(--color-background-highlight-2);
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  object-position: center;
+}
+
+.title {
+  font-size: 1.3rem;
+  color: var(--color-text-2);
+  font-weight: 600;
+}
+
+hr {
+  border: 0; 
+  border-top: 1px solid var(--color-background-highlight-3); 
+  margin: 0 0 2rem;
+  }
 
 nav {
   width: 100%;

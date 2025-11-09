@@ -391,7 +391,7 @@ PADDLE_BILLING = {
     "PADDLE_API_URL": (
         config("PADDLE_SANDBOX_API_URL") if DEBUG else config("PADDLE_API_URL")
     ),
-    "PADDLE_SANDBOX": True,  # True: 沙箱環境
+    "PADDLE_SANDBOX": config("PADDLE_SANDBOX", default=True),  # True: 沙箱環境
     "PADDLE_ACCOUNT_MODEL": "auth.User",
     "PADDLE_ACCOUNT_LINK_BY_CUSTOMER": True,
     "PADDLE_API_KEY": config("PADDLE_API_KEY"),

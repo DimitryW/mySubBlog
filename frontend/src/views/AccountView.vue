@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import PersonalInfo from './PersonalInfo.vue'
 import PaymentHistory from './PaymentHistory.vue'
+import { uploadAvatar, avatarUrl } from '@/api/accountUsers.js'
 
 const activeTab = ref('info') // info 或 payments
 </script>
@@ -10,6 +11,18 @@ const activeTab = ref('info') // info 或 payments
   <div class="account-wrapper">
     <h1>Account</h1>
     <div class="account-content">
+      <div class="avatar-wrapper">
+          <img
+            v-if="avatarUrl"
+            :src="avatarUrl"
+            alt="大頭貼"
+            class="avatar_img"
+            @click="$refs.fileInput.click()"
+          />
+          <input type="file" @change="uploadAvatar" class="avatar_input" ref="fileInput"/>
+      </div>
+      <hr />
+
       <div class="tabs">
         <button :class="{ active: activeTab === 'info' }" @click="activeTab = 'info'">
           Personal Info
@@ -36,6 +49,32 @@ h1 {
   margin: 0 auto;
   line-height: 100px;
 }
+
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.avatar_img {
+  border-radius: 50%;
+  border: 2px solid var(--color-background-highlight-2);
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+  object-position: center;
+}
+
+.avatar_input {
+  display: none;
+}
+
+hr {
+  border: 0; 
+  border-top: 1px solid var(--color-background-highlight-3); 
+  margin: 1rem 0 2rem;
+  }
+
 .account-content {
   width: 80%;
   min-height: 800px;

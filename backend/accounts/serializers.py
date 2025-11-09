@@ -10,6 +10,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
     subscription_info = serializers.SerializerMethodField()
     is_social_login = serializers.SerializerMethodField()
+    avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -21,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_subscribed",
             "subscription_info",
             "is_social_login",
+            "avatar",
         )
 
     def get_paddle_customer_id(self, obj):
@@ -45,3 +47,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_social_login(self, obj):
         return SocialAccount.objects.filter(user=obj).exists()
+
+    def get_avatar(self, obj):
+        request = self.context.get("request")
+        if hasattr(obj, "profile") and obj.profile.avatar:
+            return request.build_absolute_uri(obj.profile.avatar.url)
+        return request.build_absolute_uri("/static/images/default_avatar.png")
