@@ -3,9 +3,23 @@ import { ref, onMounted, watch, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { fetchPost } from '@/api/postService'
 import { fetchComments, addComment } from '@/api/commentService'
-import { is_subscribed } from '@/api/accountUsers.js'
+import { fetchUser, is_subscribed } from '@/api/accountUsers.js'
+import { useUserStore } from '../stores/user'
 import { MessageCircle, CornerDownRight } from 'lucide-vue-next'
 import Prism from 'prismjs'
+
+import { computed } from 'vue'
+
+const baseUrl = 'http://localhost:8000'
+
+const processedContent = computed(() => {
+  if (!post.value) return ''
+  const rawContent = post.value.body
+  return rawContent.replace(/<img\s+[^>]*src="([^"]+)"[^>]*>/g, (match, src) => {
+    const newSrc = src.startsWith('http') ? src : baseUrl + src
+    return match.replace(src, newSrc)
+  })
+})
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL
 const route = useRoute()
@@ -21,10 +35,11 @@ const replyContent = ref({})
 
 onMounted(async () => {
   try {
+    await fetchUser()
     const res = await fetchPost(route.params.id)
     post.value = res.data
     locked.value = post.value.is_locked && !is_subscribed.value
-    console.log(post.value, locked.value)
+    console.log(post.value.is_locked, is_subscribed.value)
     await loadComments()
     await nextTick()
     if (contentRef.value) {
@@ -133,7 +148,7 @@ function scrollToComments() {
           </RouterLink>
         </div>
         <br />
-        <div class="post-body" v-html="post.body" v-prism ref="contentRef"></div>
+        <div class="post-body" v-html="processedContent" v-prism ref="contentRef"></div>
         <img
           v-if="post.image"
           :src="post.image"

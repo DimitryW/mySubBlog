@@ -125,3 +125,7 @@ code {
     word-wrap: break-word;   /* 強制長單詞換行 */
 }
 
+img {
+  width: 90%;
+  height: auto;
+}

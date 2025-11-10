@@ -3,7 +3,7 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { fetchMySubscription, changeSubscription, payWithCrypto } from '@/api/subscription.js'
-
+import { fetchUser } from '@/api/accountUsers.js'
 
 const router = useRouter() 
 const route = useRoute()
@@ -107,7 +107,6 @@ function updateBillingCycle(cycle) {
 }
 
 function openCheckout(price) {
-  console.log('paddleCustomerId: ', paddleCustomerId.value)
   if (!paddleReady || !paddleCustomerId.value) return
   let theme = localStorage.getItem('theme');
   if (!theme) {
@@ -136,10 +135,11 @@ async function fetchSubscription() {
   }
 }
 
-onMounted(() => {
-  initPaddle();
-  fetchSubscription();
-});
+onMounted(async () => {
+  await fetchUser()
+  initPaddle()
+  fetchSubscription()
+})
 
 watch(
   () => route.fullPath,
