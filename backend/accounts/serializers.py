@@ -52,4 +52,6 @@ class UserSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         if hasattr(obj, "profile") and obj.profile.avatar:
             return request.build_absolute_uri(obj.profile.avatar.url)
-        return request.build_absolute_uri("/static/images/default_avatar.png")
+        return (
+            "https://storage.googleapis.com/dima-test1/static/images/default_avatar.png"
+        )

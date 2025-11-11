@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
+from google.oauth2 import service_account
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -221,8 +222,16 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# if DEBUG:
+#     MEDIA_ROOT = BASE_DIR / "media"
+#     STATIC_ROOT = BASE_DIR / "staticfiles"
+# else:
+#     MEDIA_URL = f"https://storage.googleapis.com/{config('GS_BUCKET_NAME')}/"
+#     STATIC_URL = f"https://storage.googleapis.com/{config('GS_BUCKET_NAME')}/static/"
+
+MEDIA_URL = f"https://storage.googleapis.com/{config('GS_BUCKET_NAME')}/"
+STATIC_URL = f"https://storage.googleapis.com/{config('GS_BUCKET_NAME')}/static/"
 
 customColorPalette = [
     {"color": "hsl(4, 90%, 58%)", "label": "Red"},
@@ -436,5 +445,31 @@ LOGGING = {
     "root": {
         "handlers": ["console", "file"],
         "level": "INFO" if DEBUG else "WARNING",
+    },
+}
+
+GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+    config("GOOGLE_APPLICATION_CREDENTIALS")
+)
+
+STORAGES = {
+    "default": {  # Media files
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": config("GS_BUCKET_NAME"),
+            "credentials": GS_CREDENTIALS,
+            "file_overwrite": False,
+            "querystring_auth": False,
+        },
+    },
+    "staticfiles": {  # Static files via collectstatic
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+        "OPTIONS": {
+            "bucket_name": config("GS_BUCKET_NAME"),
+            "credentials": GS_CREDENTIALS,
+            "location": "static",
+            "file_overwrite": True,
+            "querystring_auth": False,
+        },
     },
 }

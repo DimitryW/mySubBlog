@@ -5,6 +5,20 @@ import PaymentHistory from './PaymentHistory.vue'
 import { uploadAvatar, avatarUrl } from '@/api/accountUsers.js'
 
 const activeTab = ref('info') // info 或 payments
+const isUploading = ref(false)
+
+const handleUpload = async (event) => {
+  try {
+    isUploading.value = true
+    await uploadAvatar(event)  // 調用 API 上傳
+    window.location.reload()
+  } catch (err) {
+    console.error("上傳失敗", err)
+    alert("上傳失敗，請稍後再試")
+  } finally {
+    isUploading.value = false
+  }
+}
 </script>
 
 <template>
@@ -12,14 +26,15 @@ const activeTab = ref('info') // info 或 payments
     <h1>Account</h1>
     <div class="account-content">
       <div class="avatar-wrapper">
+          <div v-if="isUploading" class="spinner"></div>
           <img
-            v-if="avatarUrl"
+            v-else-if="avatarUrl"
             :src="avatarUrl"
             alt="大頭貼"
             class="avatar_img"
             @click="$refs.fileInput.click()"
           />
-          <input type="file" @change="uploadAvatar" class="avatar_input" ref="fileInput"/>
+          <input type="file" @change="handleUpload" class="avatar_input" ref="fileInput"/>
       </div>
       <hr />
 
@@ -107,5 +122,20 @@ hr {
   padding: 1rem;
   background: var(--color-background-soft);
   border-radius: 8px;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--color-background-highlight-1);
+  border-radius: 50%;
+  width: 5rem;
+  height: 5rem;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 </style>
