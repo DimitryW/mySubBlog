@@ -242,6 +242,7 @@ customColorPalette = [
     {"color": "hsl(207, 90%, 54%)", "label": "Blue"},
 ]
 # ckeditor_5 settings
+CKEDITOR_5_FILE_STORAGE = "blog.storages.MyGoogleCloudStorage"
 CKEDITOR_5_CUSTOM_CSS = "css/base.css"
 CKEDITOR_5_CONFIGS = {
     "default": {
@@ -451,12 +452,14 @@ LOGGING = {
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
     config("GOOGLE_APPLICATION_CREDENTIALS")
 )
+bucket_name = config("GS_BUCKET_NAME")
+
 
 STORAGES = {
     "default": {  # Media files
         "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
         "OPTIONS": {
-            "bucket_name": config("GS_BUCKET_NAME"),
+            "bucket_name": bucket_name,
             "credentials": GS_CREDENTIALS,
             "file_overwrite": False,
             "querystring_auth": False,
@@ -465,7 +468,7 @@ STORAGES = {
     "staticfiles": {  # Static files via collectstatic
         "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
         "OPTIONS": {
-            "bucket_name": config("GS_BUCKET_NAME"),
+            "bucket_name": bucket_name,
             "credentials": GS_CREDENTIALS,
             "location": "static",
             "file_overwrite": True,
