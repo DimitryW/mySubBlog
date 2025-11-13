@@ -10,7 +10,7 @@ import Prism from 'prismjs'
 
 import { computed } from 'vue'
 
-const baseUrl = 'http://localhost:8000'
+const baseUrl = import.meta.env.VITE_API_BASE_URL
 
 const processedContent = computed(() => {
   if (!post.value) return ''
@@ -35,20 +35,27 @@ const replyContent = ref({})
 
 onMounted(async () => {
   try {
-    await fetchUser()
+    const user = await fetchUser()
+    if (!user || Object.keys(user).length === 0) {
+      notLoggedIn.value = true
+    } else {
+      notLoggedIn.value = false
+    }
+
     const res = await fetchPost(route.params.id)
     post.value = res.data
+
     locked.value = post.value.is_locked && !is_subscribed.value
     console.log(post.value.is_locked, is_subscribed.value)
+
     await loadComments()
     await nextTick()
     if (contentRef.value) {
       Prism.highlightAllUnder(contentRef.value)
     }
+
   } catch (err) {
-    if (err.response && [401, 403].includes(err.response.status)) {
-      notLoggedIn.value = true
-    }
+    console.error("載入文章錯誤:", err)
   } finally {
     loading.value = false
   }
@@ -114,14 +121,14 @@ function scrollToComments() {
     </div>
 
     <!-- 尚未登入 -->
-    <div v-else-if="notLoggedIn" class="other-wrapper">
+    <!-- <div v-else-if="notLoggedIn" class="other-wrapper">
       <p>你尚未登入，請先登入查看文章</p>
       <a :href="`${API_BASE}/accounts/login/`">前往登入</a>
-    </div>
+    </div> -->
 
     <!-- 文章鎖定 -->
     <div v-else-if="locked" class="other-wrapper">
-      <p>此篇文章僅限訂閱會員，請前往訂閱後解鎖</p>
+      <p>此篇文章僅限訂閱會員，請登入並訂閱後解鎖</p>
       <a :href="`/subscription/`">前往訂閱</a>
     </div>
 

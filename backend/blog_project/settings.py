@@ -14,6 +14,7 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config
 from google.oauth2 import service_account
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,7 +32,12 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "f61e6f9446a5.ngrok-free.app"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "f61e6f9446a5.ngrok-free.app",
+    "35.221.245.162",
+]
 
 
 # Application definition
@@ -439,7 +445,7 @@ LOGGING = {
         },
         "file": {
             "class": "logging.FileHandler",
-            "filename": "django.log",
+            "filename": "/app/logs/django.log",
             "formatter": "standard",
         },
     },
@@ -449,8 +455,11 @@ LOGGING = {
     },
 }
 
+# GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+#     config("GOOGLE_APPLICATION_CREDENTIALS")
+# )
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    config("GOOGLE_APPLICATION_CREDENTIALS")
+    os.path.join(BASE_DIR, "dima-test1_bucket.json")
 )
 bucket_name = config("GS_BUCKET_NAME")
 

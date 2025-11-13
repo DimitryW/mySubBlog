@@ -76,9 +76,9 @@ class PostViewSet(viewsets.ModelViewSet):
     serializer_class = PostSerializer
 
     def get_permissions(self):
-        if self.action == "list":
+        if self.action in ["list", "retrieve"]:
             return [AllowAny()]
-        else:  # retrieve, create, update, delete
+        else:  # create, update, delete
             return [IsAuthenticated()]
 
     @action(detail=False, methods=["get"], url_path="tag/(?P<tag>[^/.]+)")

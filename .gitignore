@@ -22,3 +22,6 @@ dist/
 # Django logs
 *.log
 django.log
+
+# Google Cloud service account key
+backend/dima-test1_bucket.json
