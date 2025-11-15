@@ -32,12 +32,7 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "f61e6f9446a5.ngrok-free.app",
-    "35.221.245.162",
-]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
 
 
 # Application definition
@@ -80,7 +75,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-SITE_ID = 1
+SITE_ID = 2
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # Django 內建
@@ -99,9 +94,10 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
 }
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-LOGIN_REDIRECT_URL = "http://localhost:5173"  # 登入成功後導向首頁
-LOGOUT_REDIRECT_URL = "http://localhost:5173"  # 登出後導向首頁
+LOGIN_REDIRECT_URL = config("FRONTEND_URL")  # 登入成功後導向首頁
+LOGOUT_REDIRECT_URL = config("FRONTEND_URL")  # 登出後導向首頁
 
 SOCIALACCOUNT_LOGIN_ON_GET = False  # 點擊社群登入按鈕後，會先導向 allauth 的登入頁面
 
@@ -123,14 +119,9 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Vue dev server
-]
+CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="").split(",")
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:5173",
-    "https://f61e6f9446a5.ngrok-free.app",
-]
+CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="").split(",")
 
 # 允許攜帶 cookie
 CORS_ALLOW_CREDENTIALS = True
@@ -405,9 +396,7 @@ CKEDITOR_5_CONFIGS = {
 PADDLE_BILLING = {
     "PADDLE_API_TOKEN": config("PADDLE_API_KEY"),
     "PADDLE_SECRET_KEY": config("PADDLE_SECRET_KEY"),
-    "PADDLE_API_URL": (
-        config("PADDLE_SANDBOX_API_URL") if DEBUG else config("PADDLE_API_URL")
-    ),
+    "PADDLE_API_URL": (config("PADDLE_SANDBOX_API_URL")),
     "PADDLE_SANDBOX": config("PADDLE_SANDBOX", default=True),  # True: 沙箱環境
     "PADDLE_ACCOUNT_MODEL": "auth.User",
     "PADDLE_ACCOUNT_LINK_BY_CUSTOMER": True,
