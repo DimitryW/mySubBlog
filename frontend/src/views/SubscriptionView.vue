@@ -4,6 +4,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
 import { fetchMySubscription, changeSubscription, payWithCrypto } from '@/api/subscription.js'
 import { fetchUser } from '@/api/accountUsers.js'
+import { CreditCard, Bitcoin } from 'lucide-vue-next'
 
 const router = useRouter() 
 const route = useRoute()
@@ -13,6 +14,7 @@ const userStore = useUserStore();
 const selectedPriceId = ref(''); 
 const selectedTier = ref('tier1'); 
 const paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
+const isLoggedIn = ref(false);
 
 const CONFIG = {
   clientToken: import.meta.env.VITE_PADDLE_TOKEN,
@@ -107,6 +109,10 @@ function updateBillingCycle(cycle) {
 }
 
 function openCheckout(price) {
+  if (!isLoggedIn.value) {
+    alert("請先登入帳號");
+    return;
+  }
   if (!paddleReady || !paddleCustomerId.value) return
   let theme = localStorage.getItem('theme');
   if (!theme) {
@@ -136,9 +142,10 @@ async function fetchSubscription() {
 }
 
 onMounted(async () => {
-  await fetchUser()
+  const userData = await fetchUser()
   initPaddle()
   fetchSubscription()
+  isLoggedIn.value = !!userData.username
 })
 
 watch(
@@ -176,6 +183,10 @@ function selectTier(tier, priceId) {
 
 // NowPayments Crypto Payment
 function handleCryptoPay() {
+  if (!isLoggedIn.value) {
+    alert("請先登入帳號");
+    return;
+  }
   const subId = NOWPAYMENT_SUBS[selectedTier.value][billingCycle.value];
   if (!subId) return alert("No subscription ID for selected plan.");
   payWithCrypto(subId);
@@ -201,7 +212,7 @@ function handleCryptoPay() {
         <p>Status: {{ subscription.status }}</p>
       </div>
 
-      <h1 v-if="!subscription.name" class="title">Upgrade Your Plan</h1>
+      <h1 v-if="!subscription.name" class="title">Choose Your Plan</h1>
       <h1 v-else class="title">Change Your Plan</h1>
       <!-- Billing Toggle -->
       <div class="billing-toggle">
@@ -285,10 +296,10 @@ function handleCryptoPay() {
       <div class="switch-btn-wrapper">
         <div v-if="selectedPriceId && currentPriceId !== selectedPriceId">
           <button v-if="!subscription.name" @click="openCheckout(selectedPriceId)">
-              Pay with Credit Card
+              <CreditCard class="inline w-5 h-5 mr-2"/> Pay with Credit Card
           </button>
           <button v-if="selectedPriceId && !subscription.name" @click="handleCryptoPay">
-            Pay with Crypto
+            <Bitcoin class="inline w-5 h-5 mr-2"/> Pay with Crypto
           </button>
 
           <button v-else :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
@@ -420,6 +431,19 @@ hr {
 
 .switch-btn-wrapper {
   height: 3rem;
+}
+
+.switch-btn-wrapper > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.switch-btn-wrapper button {
+  display: flex;
+  align-items: center; 
+  gap: 0.5rem;
 }
 
 .switch-btn-wrapper button div {

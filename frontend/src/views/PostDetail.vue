@@ -206,7 +206,7 @@ function scrollToComments() {
             送出
           </button>
         </div>
-        <div v-else>
+        <div v-else class="comment-form">
           <p>登入後即可留言。</p>
         </div>
       </div>

@@ -72,6 +72,7 @@ class CommentAdmin(admin.ModelAdmin):
         "short_content",
         "parent",
         "created_at",
+        "is_read",
     )
     search_fields = ("post__title", "user__username", "content")
     list_filter = ("post", "user", "created_at")

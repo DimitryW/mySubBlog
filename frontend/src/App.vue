@@ -43,7 +43,7 @@ onMounted(() => {
   <header>
     <div class="logo-wrapper">
       <RouterLink to="/">
-        <img class="logo-img" src="/site_logo.jpg" alt="Dimitry's Digest Logo"/>
+        <img class="logo-img" src="/small_site_logo.jpg" alt="Dimitry's Digest Logo"/>
         <div class="title">Dimitry's Digest</div>
       </RouterLink>
     </div> 
@@ -86,7 +86,7 @@ onMounted(() => {
           <LayoutList class="icon" /> Categories
         </RouterLink>
 
-        <RouterLink v-if="isLoggedIn" to="/subscription">
+        <RouterLink to="/subscription">
           <CreditCard class="icon" /> Subscription
         </RouterLink>
 

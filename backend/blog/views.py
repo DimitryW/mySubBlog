@@ -59,7 +59,13 @@ class CommentViewSet(generics.ListCreateAPIView):
         )
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user, post_id=self.kwargs["post_id"])
+        comment = serializer.save(
+            user=self.request.user, post_id=self.kwargs["post_id"]
+        )
+        if comment.parent and self.request.user.is_staff:
+            Comment.objects.filter(pk__in=[comment.pk, comment.parent.pk]).update(
+                is_read=True
+            )
 
     def get_permissions(self):
         if self.request.method == "POST":
