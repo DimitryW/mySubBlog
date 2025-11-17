@@ -98,3 +98,17 @@ class PostViewSet(viewsets.ModelViewSet):
         page = paginator.paginate_queryset(posts, request)
         serializer = self.get_serializer(page, many=True)
         return paginator.get_paginated_response(serializer.data)
+
+    @action(detail=False, methods=["get"], url_path="members-only")
+    def members_only(self, request):
+        posts = (
+            Post.objects.filter(is_locked=True)
+            .annotate(comments_count=Count("comments"))
+            .order_by("-created_at")
+        )
+
+        paginator = TagsPostPagination()
+        page = paginator.paginate_queryset(posts, request)
+        serializer = self.get_serializer(page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)

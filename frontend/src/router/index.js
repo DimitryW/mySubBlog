@@ -8,6 +8,7 @@ import CategoriesView from '@/views/Categories.vue'
 import CategoriesPostsView from '@/views/CategoriesPostsView.vue'
 import TagPostsView from '@/views/TagPostsView.vue'
 import Account from '@/views/AccountView.vue'
+import MembersOnlyView from '@/views/MembersOnly.vue'
 
 
 const router = createRouter({
@@ -21,7 +22,8 @@ const router = createRouter({
     {path: '/categories', name: 'categories', component: CategoriesView},
     {path: '/categories/:slug', name: 'CategoryPosts', component: CategoriesPostsView},
     {path: '/tags/:tag', name: 'TagPosts', component: TagPostsView},
-    {path: '/account', name: 'account', component: Account}
+    {path: '/account', name: 'account', component: Account},
+    {path: '/members', name: 'membersOnly', component: MembersOnlyView},
   ],
 })
 

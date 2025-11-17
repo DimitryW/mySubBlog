@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from './stores/user'
-import { Sun, Moon, LogIn, LogOut, Home, Info, CreditCard, User, BookMarked, LayoutList, MessageCircle } from 'lucide-vue-next'
+import { Sun, Moon, LogIn, LogOut, Home, Info, CreditCard, User, BookMarked, LayoutList, MessageCircle, Crown } from 'lucide-vue-next'
 import { isLoggedIn, username, login, logout, fetchUser } from '@/api/accountUsers.js'
 
 const userStore = useUserStore()
@@ -80,6 +80,10 @@ onMounted(() => {
       <nav :class="{ open: isMenuOpen }">
         <RouterLink to="/">
           <Home class="icon" /> Home
+        </RouterLink>
+
+        <RouterLink to="/members">
+          <Crown class="icon" /> Members Only
         </RouterLink>
 
         <RouterLink to="/categories">

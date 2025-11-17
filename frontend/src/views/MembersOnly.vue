@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { MessageCircle, LockKeyhole, LockKeyholeOpen } from 'lucide-vue-next'
-import { fetchPosts } from '../api/postService.js'
+import { fetchMemberPost } from '../api/postService.js'
 import { is_subscribed } from '@/api/accountUsers.js'
 
 const posts = ref([])
@@ -16,7 +16,7 @@ async function loadPosts(page = 1, append = false) {
   if (loading.value) return
   loading.value = true
   try {
-    const response = await fetchPosts(page)
+    const response = await fetchMemberPost(page)
     console.log(response)
     if (append) {
       posts.value.push(...response.data.results)
@@ -103,7 +103,7 @@ function timeAgo(dateString) {
 
 <template>
   <div>
-    <h1>All Posts</h1>
+    <h1>Members Only Posts</h1>
     <ul class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-card">
       <RouterLink :to="`/posts/${post.id}`">

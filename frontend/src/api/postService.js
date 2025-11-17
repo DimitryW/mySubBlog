@@ -11,6 +11,12 @@ export function fetchPost(id) {
     return axios.get(`${API_BASE}/api/blog/posts/${id}/`, { withCredentials: true });
 }
 
+export function fetchMemberPost() {
+  return axios.get(`${API_BASE}/api/blog/posts/members-only/`, {
+    withCredentials: true
+  });
+}
+
 export const getPostsByTag = async (tag, page = 1) => {
   try {
     const res = await axios.get(`${API_BASE}/api/blog/posts/tag/${tag}/`, {
