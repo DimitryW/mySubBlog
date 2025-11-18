@@ -75,7 +75,7 @@ REST_FRAMEWORK = {
     ),
 }
 
-SITE_ID = 5
+SITE_ID = 1
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",  # Django 內建
@@ -434,7 +434,7 @@ LOGGING = {
         },
         "file": {
             "class": "logging.FileHandler",
-            "filename": "/app/logs/django.log",
+            "filename": "django.log",
             "formatter": "standard",
         },
     },
@@ -444,12 +444,12 @@ LOGGING = {
     },
 }
 
-# GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-#     config("GOOGLE_APPLICATION_CREDENTIALS")
-# )
 GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-    os.path.join(BASE_DIR, "dima-test1_bucket.json")
+    config("GOOGLE_APPLICATION_CREDENTIALS")
 )
+# GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+#     os.path.join(BASE_DIR, "dima-test1_bucket.json")
+# )
 bucket_name = config("GS_BUCKET_NAME")
 
 
