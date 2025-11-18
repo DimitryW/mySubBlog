@@ -87,10 +87,10 @@ cd mySubBlog
 # Website settings
 WEBSITE_TITLE="MySubBlog"
 FRONTEND_URL=https://yourdomain.com
-ALLOWED_HOSTS=yourdomain.com,www.yourdomain.com,localhost
-CORS_ALLOWED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com,http://localhost:8000,http://localhost:5173
-CSRF_TRUSTED_ORIGINS=https://yourdomain.com,https://www.yourdomain.com,http://localhost:8000,http://localhost:5173
-DOMAIN=yourdomain.com,www.yourdomain.com
+ALLOWED_HOSTS=yourdomain.com
+CORS_ALLOWED_ORIGINS=https://yourdomain.com
+CSRF_TRUSTED_ORIGINS=https://yourdomain.com
+DOMAIN=yourdomain.com
 ADMIN_EMAIL=youremail@example.com
 
 # Django settings
