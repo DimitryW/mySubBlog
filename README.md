@@ -53,7 +53,7 @@ Because of this limitation, the backend includes a scheduled task (via Django-cr
 that periodically polls the NOWPayments API to verify the latest subscription statuses 
 and ensure they are still marked as "paid."
 
-This implementation works reliably for the demo and prototype stage, but is not ideal 
+This implementation works for the demo and prototype stage, but is not ideal 
 for long-term production use. I plan to continue evaluating alternative payment 
 providers that offer complete subscription webhook support.
 
