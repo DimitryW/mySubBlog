@@ -299,7 +299,7 @@ function handleCryptoPay() {
 
       </div>
 
-      <div class="switch-btn-wrapper">
+      <!-- <div class="switch-btn-wrapper">
         <div v-if="selectedPriceId && currentPriceId !== selectedPriceId">
           <button v-if="!subscription.name" @click="openCheckout(selectedPriceId)">
               <CreditCard class="inline w-5 h-5 mr-2"/> Pay with Credit Card
@@ -317,7 +317,8 @@ function handleCryptoPay() {
             </template>
           </button>
         </div>
-      </div>
+      </div> -->
+      
     </div>
   </div>
 </template>

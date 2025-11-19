@@ -7,7 +7,12 @@ This is a full-stack, frontend-backend separated project built and maintained by
 **Live Demo**:
 ![alt text](output.gif)
 
-website link: https://blog.dmxstudio.site/
+website link: https://blog.dmxstudio.site/  
+### Demo Account:
+- **Test Account:** test2@gmail.com / test123456  
+- **Payment Disabled:** Payment buttons are hidden; no real transactions.  
+- **Demo Data Only:** Changes do not affect production data.    
+
 
 ## Why I Built This
 - Full ownership of content, user data, and revenue — no reliance on Medium, Substack, or Patreon  
