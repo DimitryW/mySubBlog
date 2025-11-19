@@ -1,8 +1,8 @@
 # MySubBlog – Personal Subscription-Based Blog
 
 ## Overview
-A production-ready, subscription-based personal blog where readers can access premium content via credit card (Paddle) or cryptocurrency (NOWPayments).  
-This is a full-stack, frontend-backend separated project built and maintained by a single developer — now running smoothly with real paying subscribers.
+A subscription-based personal blog where readers can access premium content via credit card (Paddle) or cryptocurrency (NOWPayments).  
+This is a full-stack, frontend-backend separated project.
 
 ### Live Demo:
 ![alt text](output.gif)
@@ -16,10 +16,9 @@ website link: https://blog.dmxstudio.site/
 
 
 ## Why I Built This
-- Full ownership of content, user data, and revenue — no reliance on Medium, Substack, or Patreon  
+- Full ownership of content, user data, and revenue — no reliance on Medium, Substack, or or any other paltforms.  
 - Real-world practice integrating multiple payment providers (fiat + crypto)  
 - End-to-end full-stack experience: from infrastructure to UX  
-- A live product that generates actual recurring revenue
 
 ## Key Features
 
