@@ -43,6 +43,21 @@ website link: https://blog.dmxstudio.site/
 - Media served from GCS   
 - Complete API-first architecture (Vue 3 frontend consumes Django REST API)
 
+### Payment Gateway Integration Notes
+
+While this project currently supports cryptocurrency subscriptions via NOWPayments, 
+the platform's webhook system(IPN) only provides **payment events** and does not include 
+**subscription lifecycle updates** (e.g., renewal status, expiration, or cancellation).
+
+Because of this limitation, the backend includes a scheduled task (via Django-crontab) 
+that periodically polls the NOWPayments API to verify the latest subscription statuses 
+and ensure they are still marked as "paid."
+
+This implementation works reliably for the demo and prototype stage, but is not ideal 
+for long-term production use. I plan to continue evaluating alternative payment 
+providers that offer complete subscription webhook support.
+
+
 ## System Architecture
 - Docker Compose deployment to GCP VM with Cloud DNS for domain management
 - Google Cloud Storage (GCS) for media files
