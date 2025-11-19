@@ -4,8 +4,9 @@
 A production-ready, subscription-based personal blog where readers can access premium content via credit card (Paddle) or cryptocurrency (NOWPayments).  
 This is a full-stack, frontend-backend separated project built and maintained by a single developer — now running smoothly with real paying subscribers.
 
-**Live Demo**:
+### Live Demo:
 ![alt text](output.gif)
+
 
 website link: https://blog.dmxstudio.site/  
 ### Demo Account:

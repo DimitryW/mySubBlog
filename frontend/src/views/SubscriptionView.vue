@@ -299,16 +299,17 @@ function handleCryptoPay() {
 
       </div>
 
-      <!-- <div class="switch-btn-wrapper">
+      <div class="switch-btn-wrapper">
         <div v-if="selectedPriceId && currentPriceId !== selectedPriceId">
-          <button v-if="!subscription.name" @click="openCheckout(selectedPriceId)">
+          <button v-if="!subscription.name" :disabled="true" @click="openCheckout(selectedPriceId)">
               <CreditCard class="inline w-5 h-5 mr-2"/> Pay with Credit Card
           </button>
-          <button v-if="selectedPriceId && !subscription.name" @click="handleCryptoPay">
+          <button v-if="selectedPriceId && !subscription.name" :disabled="true" @click="handleCryptoPay">
             <Bitcoin class="inline w-5 h-5 mr-2"/> Pay with Crypto
           </button>
 
-          <button v-else-if="!useNowpayment" :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
+          <!-- <button v-else-if="!useNowpayment" :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)"> -->
+          <button v-else-if="!useNowpayment" :disabled="true" @click="handleSwitchPlan(selectedPriceId)">
             <template v-if="isSwitching">
               <span class="spinner"></span> Switching...
             </template>
@@ -317,7 +318,7 @@ function handleCryptoPay() {
             </template>
           </button>
         </div>
-      </div> -->
+      </div>
       
     </div>
   </div>
@@ -472,6 +473,11 @@ button {
 
 button:hover {
   transform: scale(1.06); 
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .current-plan {

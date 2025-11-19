@@ -21,8 +21,8 @@ function goChangeEmail() {
     <p><strong>Email:</strong> {{ userStore.user?.email }}</p>
     <p><strong>Subscription:</strong> {{ userStore.user?.subscription_info ? userStore.user.subscription_info.name : 'Not Subscribed' }}</p>
     <div v-if="!userStore.user?.is_social_login">
-      <button class="account-button"  @click="goChangePassword">更改密碼</button>
-      <button class="account-button"  @click="goChangeEmail">更改 Email</button>
+      <button class="account-button" :disabled="true" @click="goChangePassword">更改密碼</button>
+      <button class="account-button" :disabled="true" @click="goChangeEmail">更改 Email</button>
     </div>
   </div>
 </template>
@@ -42,5 +42,10 @@ p {
   border: 1px solid var(--color-background-highlight-2);
   cursor: pointer;
   font-weight: 600;
+}
+
+.account-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 </style>

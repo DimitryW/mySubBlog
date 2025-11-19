@@ -30,6 +30,7 @@
           <li>Google OAuth 登入</li>
           <li>用戶訂閱（Paddle 信用卡支付 / NowPayments 加密貨幣支付）</li>
           <li>新文章發布時自動 email 通知訂閱用戶</li>
+          <li>其他功能持續開發中</li>
         </ul>
       </section>
 
