@@ -81,7 +81,7 @@ providers that offer complete subscription webhook support.
 
 
 
-## Setup
+<!-- ## Setup
 
 ### Requirements
 - Docker & Docker Compose
@@ -164,9 +164,9 @@ docker-compose exec web python manage.py createsuperuser
 ### 5. Socialaccount settings:
 Login to the admin interface to edit the socialaccount info with google auth client id and key for the allauth process.
 
- 
+  -->
 
-## License
+<!-- ## License
 
 This project is licensed under the MIT License.  
-Owner: Dimitry Wu
+Owner: Dimitry Wu -->
