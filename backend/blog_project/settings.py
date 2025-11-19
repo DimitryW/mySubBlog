@@ -56,6 +56,8 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     # jwt
     "rest_framework_simplejwt.token_blacklist",
+    # cron jobs
+    "django_crontab",
     # apps
     "blog",
     "accounts",
@@ -474,3 +476,8 @@ STORAGES = {
         },
     },
 }
+
+
+CRONJOBS = [
+    ("*/10 * * * *", "nowpayment.cron.sync_nowpayment_status"),
+]

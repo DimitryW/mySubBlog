@@ -1,6 +1,7 @@
 FROM python:3.11-slim
 # 安裝 OS 層依賴
 RUN apt-get update && apt-get install -y \
+    cron \
     build-essential \
     libpq-dev \
     libxml2-dev \

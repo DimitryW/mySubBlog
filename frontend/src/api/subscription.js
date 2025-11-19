@@ -6,8 +6,22 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL;
 export async function fetchMySubscription() {
   const res = await axios.get(`${API_BASE}/api/paddle/my-subscription/`, {
     withCredentials: true,
+    headers: {
+    "X-CSRFToken": getCookie("csrftoken"),
+  },
   });
-  console.log("Response:", res);
+  console.log("Paddle Response:", res);
+  return res.data;
+}
+
+export async function fetchMyNowPaymentSubscription() {
+  const res = await axios.get(`${API_BASE}/api/nowpayment/my-subscription/`, {
+    withCredentials: true,
+    headers: {
+    "X-CSRFToken": getCookie("csrftoken"),
+  },
+  });
+  console.log("NowPayment Response:", res.data);
   return res.data;
 }
 

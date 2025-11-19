@@ -12,8 +12,40 @@ import json
 from django.utils import timezone
 import json, hmac, hashlib
 from decouple import config
+from .models import NowPaymentSubscription
+from django.utils.dateparse import parse_datetime
 
 logger = logging.getLogger(__name__)
+
+
+def serialize_nowpayment_subscription(sub: NowPaymentSubscription):
+    return {
+        "id": sub.id,
+        "customer_email": sub.email,
+        "name": f"{sub.subscription_plan_id}",
+        "price": "",
+        "price_id": sub.subscription_plan_id,
+        "next_payment": (
+            sub.expire_date.strftime("%Y-%m-%d") if sub.expire_date else None
+        ),
+        "status": sub.status,
+        "desc": "",
+        "is_active": sub.is_active,
+        "created_at": sub.created_at,
+        "updated_at": sub.updated_at,
+    }
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def my_subscription(request):
+    user = request.user
+    subscriptions = NowPaymentSubscription.objects.filter(user=user)
+    if subscriptions.exists():
+        data = serialize_nowpayment_subscription(subscriptions.first())
+    else:
+        data = {}
+    return Response(data)
 
 
 def verify_nowpayments_signature(request, secret):
@@ -57,6 +89,20 @@ def create_subscription(request):
     }
 
     resp = requests.post(url, json=payload, headers=headers)
+    data = resp.json()
+
+    # 建立 Model
+    sub = NowPaymentSubscription.objects.create(
+        id=data["result"][0]["id"],
+        user=request.user,
+        subscription_plan_id=data["result"][0]["subscription_plan_id"],
+        is_active=data["result"][0]["is_active"],
+        status=data["result"][0]["status"],
+        expire_date=parse_datetime(data["result"][0]["expire_date"]),
+        email=data["result"][0]["subscriber"]["email"],
+        created_at=parse_datetime(data["result"][0]["created_at"]),
+        updated_at=parse_datetime(data["result"][0]["updated_at"]),
+    )
     return Response(resp.json())
 
 
@@ -66,6 +112,9 @@ def create_subscription(request):
 def nowpayment_webhook(request):
     """接收 NOWPayments 的 webhook 通知，驗證簽章後更新狀態"""
     try:
+        data = json.loads(request.body)
+        logger.info(f"[NOWPayments webhook] Valid webhook: {data}")
+
         # Step 1: 驗證簽章
         secret = config("NOWPAYMENT_IPN_SECRET")
         if not verify_nowpayments_signature(request, secret):
@@ -73,8 +122,6 @@ def nowpayment_webhook(request):
             return Response({"error": "Invalid signature"}, status=403)
 
         # Step 2: 解析資料
-        data = json.loads(request.body)
-        logger.info(f"[NOWPayments webhook] Valid webhook: {data}")
 
         # payment_status = data.get("payment_status")
         # order_id = data.get("order_id")

@@ -2,7 +2,7 @@
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '../stores/user'
-import { fetchMySubscription, changeSubscription, payWithCrypto } from '@/api/subscription.js'
+import { fetchMySubscription, fetchMyNowPaymentSubscription, changeSubscription, payWithCrypto } from '@/api/subscription.js'
 import { fetchUser } from '@/api/accountUsers.js'
 import { CreditCard, Bitcoin } from 'lucide-vue-next'
 
@@ -15,6 +15,7 @@ const selectedPriceId = ref('');
 const selectedTier = ref('tier1'); 
 const paddleCustomerId = computed(() => userStore.user?.paddle_customer_id);
 const isLoggedIn = ref(false);
+const useNowpayment = ref(false);
 
 const CONFIG = {
   clientToken: import.meta.env.VITE_PADDLE_TOKEN,
@@ -135,6 +136,11 @@ async function fetchSubscription() {
   try {
     subscription.value = await fetchMySubscription();
     currentPriceId.value = subscription.value.price_id;
+    if (!subscription.value || Object.keys(subscription.value).length === 0) { 
+      subscription.value = await fetchMyNowPaymentSubscription();
+      currentPriceId.value = subscription.value.price_id;
+      useNowpayment.value = true;
+    }
     console.log("My subscription updated:", subscription.value);
   } catch (err) {
     console.error("Failed to fetch subscription:", err);
@@ -302,7 +308,7 @@ function handleCryptoPay() {
             <Bitcoin class="inline w-5 h-5 mr-2"/> Pay with Crypto
           </button>
 
-          <button v-else :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
+          <button v-else-if="!useNowpayment" :disabled="isSwitching" @click="handleSwitchPlan(selectedPriceId)">
             <template v-if="isSwitching">
               <span class="spinner"></span> Switching...
             </template>
