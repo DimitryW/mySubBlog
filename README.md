@@ -11,7 +11,7 @@ This is a full-stack, frontend-backend separated project.
 website link: https://blog.dmxstudio.site/  
 ### Demo Account:
 - **Test Account:** test2@gmail.com / test123456  
-- **Payment Disabled:** Payment buttons are hidden; no real transactions.  
+- **Payment Disabled:** Payment flow is fully implemented, but real transactions are disabled in the demo environment.  
 - **Demo Data Only:** Changes do not affect production data.    
 
 
